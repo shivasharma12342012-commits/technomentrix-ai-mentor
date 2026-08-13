@@ -464,7 +464,7 @@ If you reference or build upon this project for academic or competitive research
 
 ```bibtex
 @software{AetherAiTechnomentrix2026,
-  author = {Shiva Sharma (Class IX-C) and Prabhjot Singh (Class IX-A)},
+  author = {Shiva Sharma (Class IX-A) and Prabhjot Singh (Class IX-A)},
   title = {AetherAI: Technomentrix AI Mentor & Knowledge Impact Portal},
   year = {2026},
   publisher = {GitHub},
