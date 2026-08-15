@@ -258,566 +258,137 @@
             transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ════════════════════════════════════════════════════════════════
-           LIQUID GLASS DESIGN SYSTEM  —  tokens, refraction, specular light
-           ════════════════════════════════════════════════════════════════ */
-        @property --lg-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        /* ==================== AI NAVIGATOR BAR SYSTEM ==================== */
 
-        :root {
-            color-scheme: light;
-            --lg-blur: 22px;
-            --lg-sat: 180%;
-            --lg-tint: rgba(255, 255, 255, 0.62);
-            --lg-tint-solid: rgba(255, 255, 255, 0.88);
-            --lg-border: rgba(255, 255, 255, 0.85);
-            --lg-rim: rgba(255, 255, 255, 0.95);
-            --lg-rim-low: rgba(15, 23, 42, 0.07);
-            --lg-shadow: 0 20px 45px -22px rgba(79, 70, 229, 0.35), 0 3px 10px -6px rgba(15, 23, 42, 0.12);
-            --lg-shadow-lift: 0 34px 70px -28px rgba(79, 70, 229, 0.45), 0 6px 16px -8px rgba(15, 23, 42, 0.14);
-            --lg-spot: rgba(99, 102, 241, 0.20);
-            --lg-sheen: rgba(255, 255, 255, 0.9);
-            --page-bg: #FAFAFC;
-            --aurora-1: rgba(129, 140, 248, 0.42);
-            --aurora-2: rgba(192, 132, 252, 0.36);
-            --aurora-3: rgba(125, 211, 252, 0.34);
-            --aurora-opacity: 0.9;
-            --mesh-node: #6366F1;
-            --mesh-link: #818CF8;
-            --mesh-boost: 1;
-            --track: rgba(148, 163, 184, 0.22);
-            --cursor-ring: rgba(99, 102, 241, 0.55);
+        /* Offset anchor jumps so the sticky header never covers a heading */
+        html {
+            scroll-padding-top: 6rem;
         }
 
-        /* ── Nocturne (dark) theme tokens ── */
-        html.nocturne {
-            color-scheme: dark;
-            --lg-blur: 26px;
-            --lg-sat: 165%;
-            --lg-tint: rgba(21, 27, 51, 0.58);
-            --lg-tint-solid: rgba(19, 25, 48, 0.86);
-            --lg-border: rgba(148, 163, 184, 0.20);
-            --lg-rim: rgba(199, 210, 254, 0.30);
-            --lg-rim-low: rgba(2, 6, 23, 0.55);
-            --lg-shadow: 0 24px 55px -25px rgba(2, 6, 23, 0.9), 0 0 30px -18px rgba(129, 140, 248, 0.55);
-            --lg-shadow-lift: 0 40px 80px -30px rgba(2, 6, 23, 0.95), 0 0 46px -18px rgba(139, 92, 246, 0.6);
-            --lg-spot: rgba(129, 140, 248, 0.28);
-            --lg-sheen: rgba(199, 210, 254, 0.30);
-            --page-bg: #05070F;
-            --aurora-1: rgba(79, 70, 229, 0.50);
-            --aurora-2: rgba(147, 51, 234, 0.42);
-            --aurora-3: rgba(14, 165, 233, 0.36);
-            --aurora-opacity: 0.75;
-            --mesh-node: #A5B4FC;
-            --mesh-link: #818CF8;
-            --mesh-boost: 1.7;
-            --track: rgba(148, 163, 184, 0.16);
-            --cursor-ring: rgba(165, 180, 252, 0.7);
-        }
-
-        html { transition: background-color .6s ease; }
-        body { transition: background-color .6s ease, color .6s ease; }
-
-        /* ── The core liquid surface ── */
-        .glass-panel,
-        .glass-card,
-        .liquid-glass {
+        /* Active state for the top navigation links */
+        .nav-link {
             position: relative;
-            isolation: isolate;
-            background: var(--lg-tint);
-            -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
-            backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
-            box-shadow:
-                var(--lg-shadow),
-                inset 0 1px 0 var(--lg-rim),
-                inset 0 -1px 0 var(--lg-rim-low),
-                inset 1px 0 0 rgba(255, 255, 255, 0.28),
-                inset -1px 0 0 rgba(255, 255, 255, 0.18);
-            transform-style: preserve-3d;
+            padding-bottom: 3px;
         }
-
-        /* Refraction rim: the bright meniscus where light bends at the glass edge.
-           .glass-card-hover already owns ::before for its sheen sweep, so it is
-           excluded here and gets its rim from ::after instead. */
-        .glass-panel:not(.glass-card-hover)::before,
-        .glass-card:not(.glass-card-hover)::before,
-        .liquid-glass:not(.glass-card-hover)::before {
+        .nav-link::after {
             content: '';
             position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(150deg,
-                rgba(255, 255, 255, 0.95) 0%,
-                rgba(255, 255, 255, 0.10) 32%,
-                rgba(255, 255, 255, 0) 55%,
-                rgba(148, 163, 184, 0.18) 100%);
-            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask-composite: exclude;
-            pointer-events: none;
-            z-index: 2;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 0%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #4F46E5, #7C3AED, #0284C7);
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        html.nocturne .glass-panel:not(.glass-card-hover)::before,
-        html.nocturne .glass-card:not(.glass-card-hover)::before,
-        html.nocturne .liquid-glass:not(.glass-card-hover)::before {
-            background: linear-gradient(150deg,
-                rgba(199, 210, 254, 0.55) 0%,
-                rgba(148, 163, 184, 0.10) 30%,
-                rgba(255, 255, 255, 0) 58%,
-                rgba(129, 140, 248, 0.30) 100%);
+        .nav-link:hover::after,
+        .nav-link.nav-active::after {
+            width: 100%;
+        }
+        .nav-link.nav-active {
+            color: #4F46E5;
+            font-weight: 700;
         }
 
-        /* The sheen sweep on .glass-card-hover already owns ::before — give it the rim via outline */
-        .glass-card-hover::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            box-shadow: inset 0 1px 0 var(--lg-rim);
-            z-index: 3;
+        /* AI Navigator dropdown panel (kept off .glass-panel so the 3D tilt engine ignores it) */
+        .ai-nav-panel {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 0 28px 60px -20px rgba(79, 70, 229, 0.28);
+            transform-origin: top center;
+            animation: aiPanelIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes aiPanelIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.985); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ── Cursor-tracked specular pool (the "wet light" that follows your pointer).
-              Uses a real injected element rather than a pseudo so it never collides
-              with the rim / sheen pseudo-elements above. ── */
-        .lg-spot { position: relative; isolation: isolate; }
-        .lg-glow {
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 0%),
-                var(--lg-spot), transparent 68%);
-            opacity: 0;
-            transition: opacity .45s ease;
-            z-index: -1;
+        .ai-suggestion-chip {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .lg-spot:hover > .lg-glow,
-        .lg-spot:focus-within > .lg-glow { opacity: 1; }
-
-        /* ── Animated caustic ring border (premium accent) ── */
-        .lg-ring { position: relative; }
-        .lg-ring > .lg-ring-line {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            padding: 1.5px;
-            background: conic-gradient(from var(--lg-angle),
-                transparent 0deg 70deg,
-                rgba(99, 102, 241, 0.95) 110deg,
-                rgba(217, 70, 239, 0.95) 150deg,
-                rgba(56, 189, 248, 0.95) 190deg,
-                transparent 240deg 360deg);
-            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity .5s ease;
-            pointer-events: none;
-            animation: lgSpin 5s linear infinite;
-            z-index: 4;
-        }
-        .lg-ring:hover > .lg-ring-line,
-        .lg-ring.is-live > .lg-ring-line { opacity: 1; }
-        @keyframes lgSpin { to { --lg-angle: 360deg; } }
-
-        /* ── Hover lift shared by every glass surface ── */
-        .glass-card,
-        .liquid-glass {
-            transition: transform .5s cubic-bezier(.16, 1, .3, 1),
-                        box-shadow .5s cubic-bezier(.16, 1, .3, 1),
-                        background-color .5s ease;
-            will-change: transform;
-        }
-        .glass-card:hover,
-        .liquid-glass:hover { box-shadow: var(--lg-shadow-lift); }
-        .glass-card-glow:hover,
-        .glass-card-glow:focus-within { box-shadow: var(--lg-shadow-lift); }
-
-        /* ════════════════ AURORA FIELD ════════════════ */
-        .aurora-field {
-            position: fixed;
-            inset: -12vh -10vw;
-            z-index: 0;
-            pointer-events: none;
-            opacity: var(--aurora-opacity);
-            transition: opacity .8s ease;
-        }
-        .aurora-blob {
-            position: absolute;
-            display: block;
-            filter: blur(90px);
-            will-change: transform, border-radius;
-        }
-        .blob-a {
-            width: 42vw; height: 42vw; min-width: 24rem; min-height: 24rem;
-            top: -6vh; left: 22vw;
-            background: var(--aurora-1);
-            border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
-            animation: blobMorph 22s ease-in-out infinite, blobDrift 34s ease-in-out infinite;
-        }
-        .blob-b {
-            width: 38vw; height: 38vw; min-width: 22rem; min-height: 22rem;
-            bottom: 8vh; right: 12vw;
-            background: var(--aurora-2);
-            border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
-            animation: blobMorph 27s ease-in-out infinite reverse, blobDrift 41s ease-in-out infinite reverse;
-        }
-        .blob-c {
-            width: 30vw; height: 30vw; min-width: 18rem; min-height: 18rem;
-            top: 46vh; left: -4vw;
-            background: var(--aurora-3);
-            border-radius: 52% 48% 62% 38% / 40% 60% 40% 60%;
-            animation: blobMorph 19s ease-in-out infinite, blobDrift 29s ease-in-out infinite;
-        }
-        @keyframes blobMorph {
-            0%, 100% { border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%; }
-            33%      { border-radius: 38% 62% 42% 58% / 62% 38% 63% 37%; }
-            66%      { border-radius: 55% 45% 65% 35% / 35% 65% 40% 60%; }
-        }
-        @keyframes blobDrift {
-            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-            25%      { transform: translate3d(4vw, 3vh, 0) scale(1.08); }
-            50%      { transform: translate3d(-3vw, 5vh, 0) scale(0.94); }
-            75%      { transform: translate3d(-5vw, -3vh, 0) scale(1.05); }
+        .ai-suggestion-chip:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(238, 242, 255, 0.9);
+            transform: translateY(-1px);
         }
 
-        /* ════════════════ ENTRANCE CHOREOGRAPHY ════════════════ */
-        .scroll-reveal { transition-delay: calc(var(--i, 0) * 80ms); }
-
-        .rise { opacity: 0; animation: riseIn 1s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(var(--d, 0) * 1ms); }
-        @keyframes riseIn {
-            from { opacity: 0; transform: translateY(26px) scale(.98); filter: blur(14px); }
-            to   { opacity: 1; transform: none; filter: blur(0); }
-        }
-
-        .word-rise span {
+        /* Thinking dots for the AI answer stream */
+        .ai-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: #6366F1;
             display: inline-block;
-            opacity: 0;
-            animation: wordRise .95s cubic-bezier(.16, 1, .3, 1) forwards;
-            animation-delay: calc(260ms + var(--w, 0) * 85ms);
+            animation: aiBounce 1.1s infinite ease-in-out;
         }
-        @keyframes wordRise {
-            from { opacity: 0; transform: translateY(.55em) rotateX(52deg); filter: blur(10px); }
-            to   { opacity: 1; transform: none; filter: blur(0); }
-        }
-
-        /* Living gradient in the headline */
-        .gradient-text {
-            background-size: 220% 220%;
-            animation: gradientFlow 9s ease infinite;
-        }
-        @keyframes gradientFlow {
-            0%, 100% { background-position: 0% 50%; }
-            50%      { background-position: 100% 50%; }
+        .ai-dot:nth-child(2) { animation-delay: 0.16s; }
+        .ai-dot:nth-child(3) { animation-delay: 0.32s; }
+        @keyframes aiBounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-5px); opacity: 1; }
         }
 
-        /* Light sweeping across section titles when they enter view */
-        .title-sheen { position: relative; overflow: hidden; }
-        .title-sheen.revealed::after,
-        .revealed .title-sheen::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -60%;
-            width: 45%; height: 100%;
-            background: linear-gradient(100deg, transparent, var(--lg-sheen), transparent);
-            transform: skewX(-18deg);
-            animation: titleSweep 1.6s cubic-bezier(.16, 1, .3, 1) .35s 1;
-            pointer-events: none;
-        }
-        @keyframes titleSweep { to { left: 130%; } }
-
-        /* ════════════════ INTERACTIVE FLOURISHES ════════════════ */
-        .magnetic { transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
-
-        .ripple-host { position: relative; overflow: hidden; }
-        .lg-ripple {
-            position: absolute;
+        /* Vertical Section Rail (right edge scroll navigator) */
+        .rail-dot {
+            width: 9px;
+            height: 9px;
             border-radius: 999px;
-            transform: translate(-50%, -50%) scale(0);
-            background: radial-gradient(circle, rgba(255, 255, 255, .75), rgba(255, 255, 255, 0) 70%);
-            pointer-events: none;
-            animation: rippleOut .75s cubic-bezier(.16, 1, .3, 1) forwards;
-            mix-blend-mode: overlay;
+            background: #CBD5E1;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes rippleOut {
-            to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        .rail-item:hover .rail-dot {
+            background: #818CF8;
+            transform: scale(1.35);
         }
-
-        /* Liquid cursor (pointer devices only) */
-        .lg-cursor, .lg-cursor-dot {
-            position: fixed;
-            top: 0; left: 0;
+        .rail-item.rail-active .rail-dot {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            height: 26px;
             border-radius: 999px;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity .3s ease, width .3s cubic-bezier(.16,1,.3,1), height .3s cubic-bezier(.16,1,.3,1), background-color .3s ease;
-            will-change: transform;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.55);
         }
-        .lg-cursor {
-            width: 34px; height: 34px;
-            margin: -17px 0 0 -17px;
-            border: 1.5px solid var(--cursor-ring);
-            -webkit-backdrop-filter: blur(2px) saturate(150%);
-            backdrop-filter: blur(2px) saturate(150%);
-            box-shadow: 0 0 18px -4px var(--cursor-ring), inset 0 0 12px -6px var(--cursor-ring);
-        }
-        .lg-cursor.is-hot { width: 60px; height: 60px; margin: -30px 0 0 -30px; background: var(--lg-spot); }
-        .lg-cursor-dot {
-            width: 5px; height: 5px;
-            margin: -2.5px 0 0 -2.5px;
-            background: var(--cursor-ring);
-        }
-        @media (hover: hover) and (pointer: fine) {
-            .lg-cursor, .lg-cursor-dot { opacity: 1; }
-        }
-
-        /* ════════════════ FLOATING GLASS CONTROLS ════════════════ */
-        .lg-dock {
-            position: fixed;
-            z-index: 45;
-            border-radius: 1.25rem;
-            background: var(--lg-tint-solid);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--lg-border);
-            box-shadow: var(--lg-shadow), inset 0 1px 0 var(--lg-rim);
-        }
-
-        #to-top {
-            right: 1.25rem;
-            bottom: 1.25rem;
-            width: 3.25rem; height: 3.25rem;
-            border-radius: 999px;
-            display: grid;
-            place-items: center;
-            opacity: 0;
-            transform: translateY(24px) scale(.8);
-            pointer-events: none;
-            transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
-        }
-        #to-top.is-visible { opacity: 1; transform: none; pointer-events: auto; }
-        #to-top .ring {
-            position: absolute;
-            inset: 0;
-            border-radius: 999px;
-            background: conic-gradient(from -90deg, #6366F1 calc(var(--p, 0) * 1%), var(--track) 0);
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-            mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-        }
-
-        /* Focus session dock */
-        #focus-dock {
-            left: 1.25rem;
-            bottom: 1.25rem;
-            width: 15.5rem;
-            padding: 1rem;
-            transform: translateY(140%);
-            opacity: 0;
-            transition: transform .65s cubic-bezier(.16, 1, .3, 1), opacity .45s ease;
-        }
-        #focus-dock.is-open { transform: none; opacity: 1; }
-        .focus-ring {
-            width: 5.5rem; height: 5.5rem;
-            border-radius: 999px;
-            display: grid; place-items: center;
-            background: conic-gradient(from -90deg, var(--focus-c, #6366F1) calc(var(--p, 0) * 1%), var(--track) 0);
-            -webkit-mask: none;
+        /* The item stays exactly as wide as its dot so the rail never covers page
+           content; the label floats out of layout flow and only appears on hover. */
+        .rail-item {
             position: relative;
-            transition: background .4s linear;
+            padding: 4px;
         }
-        .focus-ring::after {
-            content: '';
+        .rail-label {
             position: absolute;
-            inset: 7px;
-            border-radius: 999px;
-            background: var(--lg-tint-solid);
-            -webkit-backdrop-filter: blur(6px);
-            backdrop-filter: blur(6px);
-        }
-        .focus-ring > span { position: relative; z-index: 1; }
-        .focus-ring.is-running { animation: focusBreathe 4s ease-in-out infinite; }
-        @keyframes focusBreathe {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-            50%      { box-shadow: 0 0 26px 4px rgba(99, 102, 241, .28); }
-        }
-
-        /* Toast */
-        #lg-toast {
-            left: 50%;
-            bottom: 1.6rem;
-            transform: translate(-50%, 180%);
-            padding: .7rem 1.15rem;
-            display: flex; align-items: center; gap: .6rem;
-            border-radius: 999px;
-            font-size: .72rem;
-            letter-spacing: .04em;
+            right: 100%;
+            top: 50%;
+            margin-right: 10px;
             opacity: 0;
-            transition: transform .6s cubic-bezier(.16, 1, .3, 1), opacity .4s ease;
-        }
-        #lg-toast.is-open { transform: translate(-50%, 0); opacity: 1; }
-
-        /* ════════════════ READINESS DIAGNOSTIC ════════════════ */
-        .quiz-slide {
-            display: none;
-            animation: quizIn .6s cubic-bezier(.16, 1, .3, 1);
-        }
-        .quiz-slide.is-active { display: block; }
-        @keyframes quizIn {
-            from { opacity: 0; transform: translateX(28px) scale(.98); filter: blur(8px); }
-            to   { opacity: 1; transform: none; filter: blur(0); }
-        }
-        .quiz-opt {
-            transition: transform .3s cubic-bezier(.16, 1, .3, 1), border-color .3s ease, background-color .3s ease, box-shadow .3s ease;
-        }
-        .quiz-opt:hover { transform: translateX(6px); }
-        .quiz-opt.is-picked {
-            border-color: rgba(99, 102, 241, .65) !important;
-            box-shadow: 0 10px 26px -14px rgba(99, 102, 241, .8);
-        }
-        .quiz-dot { transition: all .4s cubic-bezier(.16, 1, .3, 1); }
-        #gauge-arc {
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: 251.2;
-            transition: stroke-dashoffset 1.6s cubic-bezier(.16, 1, .3, 1);
-        }
-
-        /* Favourite star */
-        .fav-btn i { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), color .25s ease; }
-        .fav-btn.is-fav i { color: #F59E0B; transform: scale(1.25) rotate(72deg); }
-
-        /* Prompt card exit/enter when filtering */
-        .prompt-card { transition: opacity .35s ease, transform .35s cubic-bezier(.16, 1, .3, 1); }
-        .prompt-card.is-out { opacity: 0; transform: scale(.96) translateY(10px); }
-
-        /* Theme transition wash */
-        #theme-wash {
-            position: fixed;
-            inset: 0;
-            z-index: 9998;
+            transform: translateY(-50%) translateX(8px);
             pointer-events: none;
-            opacity: 0;
-            background: radial-gradient(circle at var(--tx, 50%) var(--ty, 50%),
-                rgba(129, 140, 248, .45), rgba(15, 23, 42, .0) 60%);
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
         }
-        #theme-wash.is-firing { animation: washOut .9s ease forwards; }
-        @keyframes washOut {
-            0%   { opacity: 0; transform: scale(.2); }
-            35%  { opacity: 1; }
-            100% { opacity: 0; transform: scale(2.4); }
+        .rail-item:hover .rail-label {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
         }
 
-        /* ════════════════ NOCTURNE THEME MAPPING ════════════════ */
-        html.nocturne { background-color: var(--page-bg); }
-        html.nocturne body { background-color: var(--page-bg) !important; color: #C7D2E4; }
-        html.nocturne ::-webkit-scrollbar-track { background: #05070F; }
-        html.nocturne ::-webkit-scrollbar-thumb { background: #2B3357; }
-        html.nocturne ::-webkit-scrollbar-thumb:hover { background: #6366F1; }
-
-        html.nocturne .bg-white,
-        html.nocturne .bg-white\/70,
-        html.nocturne .bg-white\/95 { background-color: rgba(16, 21, 41, 0.72); }
-        html.nocturne .bg-slate-50 { background-color: rgba(27, 34, 61, 0.55); }
-        html.nocturne .bg-slate-100 { background-color: rgba(32, 40, 70, 0.62); }
-        html.nocturne .bg-slate-200,
-        html.nocturne .bg-slate-200\/60,
-        html.nocturne .bg-slate-200\/80 { background-color: rgba(45, 55, 92, 0.55); }
-        html.nocturne .bg-slate-900 { background-color: #080D1E; }
-        html.nocturne .bg-slate-950 { background-color: #03060F; }
-
-        html.nocturne .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.16); }
-        html.nocturne .bg-purple-50 { background-color: rgba(168, 85, 247, 0.16); }
-        html.nocturne .bg-sky-50 { background-color: rgba(14, 165, 233, 0.16); }
-        html.nocturne .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.16); }
-        html.nocturne .bg-amber-50 { background-color: rgba(245, 158, 11, 0.16); }
-        html.nocturne .bg-blue-50,
-        html.nocturne .bg-blue-50\/80 { background-color: rgba(59, 130, 246, 0.16); }
-        html.nocturne .bg-pink-50 { background-color: rgba(236, 72, 153, 0.16); }
-        html.nocturne .bg-red-50 { background-color: rgba(239, 68, 68, 0.16); }
-
-        html.nocturne .text-slate-900 { color: #E9EEFB; }
-        html.nocturne .text-slate-800 { color: #DCE4F5; }
-        html.nocturne .text-slate-700 { color: #C3CDE4; }
-        html.nocturne .text-slate-600 { color: #A5B0CA; }
-        html.nocturne .text-slate-500 { color: #8791AC; }
-        html.nocturne .text-slate-400 { color: #6D7794; }
-
-        html.nocturne .text-indigo-600, html.nocturne .text-indigo-700 { color: #A5B4FC; }
-        html.nocturne .text-purple-600, html.nocturne .text-purple-700 { color: #D8B4FE; }
-        html.nocturne .text-sky-600, html.nocturne .text-sky-700 { color: #7DD3FC; }
-        html.nocturne .text-emerald-600, html.nocturne .text-emerald-700 { color: #6EE7B7; }
-        html.nocturne .text-blue-600 { color: #93C5FD; }
-        html.nocturne .text-amber-600, html.nocturne .text-amber-700 { color: #FCD34D; }
-        html.nocturne .text-pink-700 { color: #F9A8D4; }
-        html.nocturne .text-red-600 { color: #FCA5A5; }
-        html.nocturne .text-cyan-700 { color: #67E8F9; }
-
-        html.nocturne .border-slate-200,
-        html.nocturne .border-slate-200\/70,
-        html.nocturne .border-slate-200\/80,
-        html.nocturne .border-slate-200\/90,
-        html.nocturne .border-slate-300,
-        html.nocturne .border-slate-300\/60,
-        html.nocturne .border-slate-300\/80 { border-color: rgba(148, 163, 184, 0.18); }
-        html.nocturne .border-slate-800 { border-color: rgba(148, 163, 184, 0.14); }
-        html.nocturne .border-indigo-200, html.nocturne .border-indigo-200\/80 { border-color: rgba(129, 140, 248, 0.35); }
-        html.nocturne .border-purple-200, html.nocturne .border-purple-200\/80 { border-color: rgba(192, 132, 252, 0.35); }
-        html.nocturne .border-sky-200, html.nocturne .border-sky-200\/80 { border-color: rgba(56, 189, 248, 0.35); }
-        html.nocturne .border-emerald-200, html.nocturne .border-emerald-200\/80 { border-color: rgba(52, 211, 153, 0.35); }
-        html.nocturne .border-amber-200\/80 { border-color: rgba(251, 191, 36, 0.35); }
-        html.nocturne .border-blue-200, html.nocturne .border-blue-200\/80 { border-color: rgba(96, 165, 250, 0.35); }
-        html.nocturne .border-pink-200\/80 { border-color: rgba(244, 114, 182, 0.35); }
-        html.nocturne .border-red-200 { border-color: rgba(248, 113, 113, 0.35); }
-
-        html.nocturne .hover\:bg-slate-50:hover { background-color: rgba(40, 49, 84, 0.7); }
-        html.nocturne .hover\:bg-slate-100:hover { background-color: rgba(45, 55, 92, 0.75); }
-        html.nocturne .hover\:bg-indigo-100:hover { background-color: rgba(99, 102, 241, 0.26); }
-        html.nocturne .hover\:bg-purple-100:hover { background-color: rgba(168, 85, 247, 0.26); }
-        html.nocturne .hover\:bg-sky-100:hover { background-color: rgba(14, 165, 233, 0.26); }
-        html.nocturne .hover\:bg-emerald-100:hover { background-color: rgba(16, 185, 129, 0.26); }
-        html.nocturne .hover\:bg-amber-100:hover { background-color: rgba(245, 158, 11, 0.26); }
-        html.nocturne .hover\:bg-blue-100:hover { background-color: rgba(59, 130, 246, 0.26); }
-        html.nocturne .hover\:bg-pink-100:hover { background-color: rgba(236, 72, 153, 0.26); }
-        html.nocturne .hover\:bg-emerald-50\/60:hover { background-color: rgba(16, 185, 129, 0.16); }
-
-        html.nocturne header { background-color: rgba(6, 9, 20, 0.72) !important; }
-        html.nocturne select,
-        html.nocturne input[type="text"] { color: #E9EEFB; }
-        html.nocturne select option { background: #101529; color: #E9EEFB; }
-        html.nocturne .scrolly-step.active { background: rgba(24, 31, 58, 0.9) !important; }
-        html.nocturne .reactive-stat-box { background: rgba(24, 31, 58, 0.5); }
-        html.nocturne .glass-card-hover::before {
-            background: linear-gradient(45deg, transparent 45%, rgba(199, 210, 254, 0.16) 50%, transparent 55%);
+        /* Floating prev / next / top scroll cluster */
+        .scroll-jump-btn {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scroll-jump-btn:hover:not(:disabled) {
+            background: #4F46E5;
+            color: #ffffff;
+            border-color: #4F46E5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px -8px rgba(79, 70, 229, 0.6);
+        }
+        .scroll-jump-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
 
-        /* ════════════════ ACCESSIBILITY ════════════════ */
-        :focus-visible {
-            outline: 2px solid rgba(99, 102, 241, .85);
-            outline-offset: 3px;
-            border-radius: 6px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: .001ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: .001ms !important;
-                scroll-behavior: auto !important;
-            }
-            .aurora-blob { animation: none !important; }
-            .lg-cursor, .lg-cursor-dot { display: none !important; }
-            .word-rise span, .rise { opacity: 1 !important; }
-        }
-
-        @media (max-width: 767px) {
-            .lg-cursor, .lg-cursor-dot { display: none; }
-            #focus-dock { width: calc(100vw - 2.5rem); }
-        }
+        /* Hide the horizontal scrollbar on the compact mobile section strip */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-[#FAFAFC] text-slate-800 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col justify-between relative">
@@ -828,17 +399,9 @@
     <!-- ==================== SCROLL PROGRESS INDICATOR ==================== -->
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-400 z-50 transition-all duration-75" style="width: 0%;"></div>
 
-    <!-- ==================== LIVING AURORA FIELD (morphing light) ==================== -->
-    <div class="aurora-field" aria-hidden="true">
-        <span class="aurora-blob blob-a"></span>
-        <span class="aurora-blob blob-b"></span>
-        <span class="aurora-blob blob-c"></span>
-    </div>
-
-    <!-- ==================== LIQUID CURSOR & THEME WASH ==================== -->
-    <div id="lg-cursor" class="lg-cursor" aria-hidden="true"></div>
-    <div id="lg-cursor-dot" class="lg-cursor-dot" aria-hidden="true"></div>
-    <div id="theme-wash" aria-hidden="true"></div>
+    <!-- Heavenly Ambient Glow Spheres -->
+    <div class="fixed top-0 left-1/3 w-[35rem] h-[35rem] bg-indigo-200/40 rounded-full filter blur-[140px] pointer-events-none animate-pulse-slow"></div>
+    <div class="fixed bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-purple-200/40 rounded-full filter blur-[150px] pointer-events-none animate-pulse-slow" style="animation-delay: 2.5s;"></div>
 
     <!-- ==================== NAVIGATION HEADER ==================== -->
     <header class="sticky top-0 z-40 backdrop-blur-2xl bg-[#FAFAFC]/85 border-b border-slate-200/80 transition-all duration-300">
@@ -879,40 +442,27 @@
                 </div>
             </a>
 
-            <!-- Desktop Nav Links (Scrollspy Active Highlighted) -->
-            <nav id="desktop-nav" class="hidden lg:flex items-center gap-8 text-[11px] font-mono tracking-[0.2em] uppercase text-slate-600">
-                <a href="#persona-matrix" class="nav-link hover:text-indigo-600 transition-colors">AI Benefits Matrix</a>
-                <a href="#calculator" class="nav-link hover:text-emerald-600 transition-colors">Impact Calculator</a>
-                <a href="#readiness" class="nav-link hover:text-sky-600 transition-colors">Readiness Test</a>
-                <a href="#roadmaps" class="nav-link hover:text-indigo-600 transition-colors">Adoption Roadmaps</a>
-                <a href="#prompt-library" class="nav-link hover:text-purple-600 transition-colors">Prompt Architecture</a>
+            <!-- Desktop Nav Links (Built from SITE_SECTIONS + Scrollspy Highlighted) -->
+            <nav id="desktop-nav" class="hidden lg:flex items-center gap-5 xl:gap-7 text-[10px] xl:text-[11px] font-mono tracking-[0.12em] xl:tracking-[0.16em] uppercase text-slate-600">
+                <!-- Injected by buildNavigator() -->
             </nav>
 
-            <!-- Command Palette Shortcut, Theme Switch & GitHub CTA Buttons -->
-            <div class="hidden sm:flex items-center gap-3">
-                <button onclick="toggleCmdPalette()" class="flex items-center gap-2 text-xs font-mono text-slate-600 bg-white hover:bg-slate-50 hover:text-indigo-600 px-3 py-2 rounded-xl border border-slate-200/90 transition-all shadow-sm" title="Command Palette Shortcut">
+            <!-- AI Navigator, Command Palette & GitHub CTA Buttons -->
+            <div class="hidden sm:flex items-center gap-2.5">
+                <!-- AI NAVIGATOR TRIGGER -->
+                <button id="ai-nav-btn" data-ai-toggle onclick="toggleAiNavigator()" class="group flex items-center gap-2 text-xs font-mono px-3.5 py-2 rounded-xl border transition-all shadow-sm bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 text-white border-indigo-500/40 hover:shadow-md hover:shadow-indigo-500/30" title="Ask the AI Navigator where to go (press /)">
+                    <i class="fa-solid fa-wand-magic-sparkles text-sky-200 group-hover:rotate-12 transition-transform"></i>
+                    <span class="tracking-wider">AI Navigate</span>
+                    <span id="ai-key-dot" class="w-1.5 h-1.5 rounded-full bg-amber-300" title="Local mode — no API key set"></span>
+                </button>
+
+                <button onclick="toggleCmdPalette()" class="hidden xl:flex items-center gap-2 text-xs font-mono text-slate-600 bg-white hover:bg-slate-50 hover:text-indigo-600 px-3 py-2 rounded-xl border border-slate-200/90 transition-all shadow-sm" title="Command Palette Shortcut">
                     <i class="fa-solid fa-terminal text-indigo-500"></i>
                     <span>Cmd + K</span>
                 </button>
 
-                <!-- Focus Session Launcher -->
-                <button onclick="toggleFocusDock()" class="magnetic ripple-host flex items-center gap-2 text-xs font-mono text-slate-600 bg-white hover:bg-slate-50 hover:text-emerald-600 px-3 py-2 rounded-xl border border-slate-200/90 transition-all shadow-sm" title="Deep Focus Session Timer">
-                    <i class="fa-regular fa-clock text-emerald-500"></i>
-                    <span class="hidden xl:inline">Focus</span>
-                </button>
-
-                <!-- Nocturne / Celestial Theme Switch -->
-                <button id="theme-btn" onclick="toggleTheme(event)" class="magnetic ripple-host relative flex items-center justify-center w-9 h-9 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 transition-all shadow-sm overflow-hidden" title="Toggle Nocturne Mode" aria-label="Toggle colour theme">
-                    <i id="theme-icon" class="fa-solid fa-moon text-indigo-500 text-sm"></i>
-                </button>
-
-                <a href="https://github.com/shivasharma12342012-commits/technomentrix-ai-mentor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 px-3.5 py-2 rounded-xl text-xs font-mono tracking-wider transition-all hover:border-slate-300 shadow-sm">
+                <a href="https://github.com/shivasharma12342012-commits/technomentrix-ai-mentor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 px-3 py-2 rounded-xl text-xs font-mono tracking-wider transition-all hover:border-slate-300 shadow-sm" title="GitHub Repository">
                     <i class="fa-brands fa-github text-sm text-slate-900"></i>
-                    <span class="hidden xl:inline">GitHub Repository</span>
-                </a>
-
-                <a href="#calculator" class="magnetic ripple-host px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-mono tracking-wider transition-all shadow-md shadow-indigo-600/20">
-                    <span>Calculate ROI</span>
                 </a>
             </div>
 
@@ -922,29 +472,98 @@
             </button>
         </div>
 
+        <!-- ==================== AI NAVIGATOR PANEL (Dropdown) ==================== -->
+        <div id="ai-nav-panel" class="hidden absolute left-0 right-0 top-full px-4 sm:px-6 lg:px-8 z-40">
+            <div class="max-w-3xl mx-auto ai-nav-panel rounded-2xl mt-3 overflow-hidden">
+
+                <!-- Panel Header + Query Input -->
+                <div class="p-4 sm:p-5 border-b border-slate-200/90">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-[11px]">
+                                <i class="fa-solid fa-compass"></i>
+                            </span>
+                            <div class="flex flex-col leading-tight">
+                                <span class="text-xs font-bold text-slate-900 font-mono tracking-wider">AI SITE NAVIGATOR</span>
+                                <span id="ai-mode-label" class="text-[9px] font-mono uppercase tracking-widest text-amber-600">Local Intelligence Mode</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleAiKeyPanel()" class="text-[10px] font-mono text-slate-500 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-2.5 py-1.5 rounded-lg border border-slate-200 transition-colors flex items-center gap-1.5" title="Configure TinyFish API key">
+                                <i class="fa-solid fa-key text-[9px]"></i>
+                                <span class="hidden sm:inline">API Key</span>
+                            </button>
+                            <button onclick="closeAiNavigator()" class="text-slate-400 hover:text-slate-700 w-7 h-7 rounded-lg hover:bg-slate-100 transition-colors" title="Close (Esc)">
+                                <i class="fa-solid fa-xmark text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-indigo-400 focus-within:bg-white transition-colors">
+                        <i class="fa-solid fa-magnifying-glass text-indigo-500 text-xs"></i>
+                        <input type="text" id="ai-nav-input" autocomplete="off"
+                               placeholder="Ask anything — e.g. &quot;how much time will I save?&quot;"
+                               class="w-full bg-transparent border-none text-sm text-slate-900 placeholder-slate-400 focus:outline-none font-sans">
+                        <button onclick="runAiNavigator()" class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-mono uppercase tracking-widest transition-colors">
+                            Go
+                        </button>
+                    </div>
+
+                    <!-- Quick Example Prompts -->
+                    <div class="flex flex-wrap gap-1.5 mt-3">
+                        <button onclick="runAiNavigator('How many hours can a teacher save?')" class="ai-suggestion-chip text-[10px] font-mono text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">How many hours can a teacher save?</button>
+                        <button onclick="runAiNavigator('Which free AI tool should a student use?')" class="ai-suggestion-chip text-[10px] font-mono text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">Best free AI tool for students?</button>
+                        <button onclick="runAiNavigator('Give me a prompt to grade essays')" class="ai-suggestion-chip text-[10px] font-mono text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">A prompt to grade essays</button>
+                    </div>
+                </div>
+
+                <!-- ===== TINYFISH API KEY SLOT (paste your key here in the UI) ===== -->
+                <div id="ai-key-panel" class="hidden p-4 sm:p-5 bg-indigo-50/60 border-b border-indigo-200/70 space-y-2.5">
+                    <label class="block text-[10px] font-mono uppercase tracking-widest text-indigo-800 font-bold">
+                        <i class="fa-solid fa-fish mr-1"></i> TinyFish API Key
+                    </label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="tinyfish-key-input" placeholder="Paste your TinyFish API key here…"
+                               class="flex-grow bg-white border border-indigo-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-indigo-500">
+                        <div class="flex gap-2">
+                            <button onclick="saveTinyFishKey()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                                Save Key
+                            </button>
+                            <button onclick="clearTinyFishKey()" class="px-3 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-[10px] font-mono uppercase tracking-widest transition-colors">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-600 font-light leading-relaxed">
+                        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i>
+                        Stored only in this browser's local storage. Get a key at
+                        <a href="https://agent.tinyfish.ai" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">agent.tinyfish.ai</a>.
+                        Without a key the navigator still works fully in offline Local Intelligence Mode.
+                    </p>
+                </div>
+
+                <!-- AI Answer / Routing Results -->
+                <div id="ai-nav-results" class="p-4 sm:p-5 max-h-[22rem] overflow-y-auto text-sm">
+                    <!-- Injected by runAiNavigator() -->
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Menu Drawer -->
-        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 border-b border-slate-200 px-6 pt-4 pb-6 space-y-3 backdrop-blur-2xl">
-            <a href="#scrollytelling" class="mobile-link block text-slate-700 hover:text-indigo-600 py-1.5 font-mono text-xs uppercase tracking-wider">1. Cognitive Arc</a>
-            <a href="#free-tools" class="mobile-link block text-slate-700 hover:text-sky-600 py-1.5 font-mono text-xs uppercase tracking-wider">2. Free AI Tools</a>
-            <a href="#persona-matrix" class="mobile-link block text-slate-700 hover:text-purple-600 py-1.5 font-mono text-xs uppercase tracking-wider">3. Personas Impact</a>
-            <a href="#calculator" class="mobile-link block text-slate-700 hover:text-emerald-600 py-1.5 font-mono text-xs uppercase tracking-wider">4. Time-Saved Engine</a>
-            <a href="#roadmaps" class="mobile-link block text-slate-700 hover:text-indigo-600 py-1.5 font-mono text-xs uppercase tracking-wider">5. Adoption Roadmaps</a>
-            <a href="#prompt-library" class="mobile-link block text-slate-700 hover:text-purple-600 py-1.5 font-mono text-xs uppercase tracking-wider">6. Prompt Library</a>
-            <a href="#readiness" class="mobile-link block text-slate-700 hover:text-emerald-600 py-1.5 font-mono text-xs uppercase tracking-wider">7. AI Readiness Test</a>
-            <button onclick="toggleCmdPalette()" class="w-full flex items-center justify-center gap-2 text-xs font-mono text-slate-700 bg-slate-100 py-2.5 rounded-xl border border-slate-200">
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 border-b border-slate-200 px-6 pt-4 pb-6 space-y-1.5 backdrop-blur-2xl max-h-[75vh] overflow-y-auto">
+            <button data-ai-toggle onclick="toggleAiNavigator()" class="w-full flex items-center justify-center gap-2 text-xs font-mono text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 py-3 rounded-xl mb-3 shadow-md shadow-indigo-500/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-sky-200"></i>
+                <span class="tracking-wider uppercase">Ask the AI Navigator</span>
+            </button>
+
+            <div id="mobile-nav-links" class="space-y-1">
+                <!-- Injected by buildNavigator() -->
+            </div>
+
+            <button onclick="toggleCmdPalette()" class="w-full flex items-center justify-center gap-2 text-xs font-mono text-slate-700 bg-slate-100 py-2.5 rounded-xl border border-slate-200 mt-3">
                 <i class="fa-solid fa-terminal text-indigo-600"></i>
                 <span>Open Command Palette (Cmd + K)</span>
             </button>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="toggleTheme(event)" class="flex items-center justify-center gap-2 text-xs font-mono text-slate-700 bg-slate-100 py-2.5 rounded-xl border border-slate-200">
-                    <i class="fa-solid fa-moon text-indigo-600"></i>
-                    <span>Nocturne</span>
-                </button>
-                <button onclick="toggleFocusDock()" class="flex items-center justify-center gap-2 text-xs font-mono text-slate-700 bg-slate-100 py-2.5 rounded-xl border border-slate-200">
-                    <i class="fa-regular fa-clock text-emerald-600"></i>
-                    <span>Focus Timer</span>
-                </button>
-            </div>
             <div class="pt-3 border-t border-slate-200">
                 <a href="https://github.com/shivasharma12342012-commits/technomentrix-ai-mentor" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-900 hover:bg-slate-800 rounded-xl text-xs font-mono tracking-wider text-white border border-slate-200 shadow-sm">
                     <i class="fa-brands fa-github text-sm"></i>
@@ -954,64 +573,80 @@
         </div>
     </header>
 
+    <!-- ==================== VERTICAL SECTION RAIL (Scroll Up / Down Navigator) ==================== -->
+    <nav id="section-rail" class="hidden xl:flex fixed right-5 top-1/2 -translate-y-1/2 z-30 flex-col items-end gap-3.5" aria-label="Section navigator">
+        <!-- Injected by buildNavigator() -->
+    </nav>
+
+    <!-- ==================== FLOATING PREV / NEXT / TOP CLUSTER ==================== -->
+    <div class="fixed bottom-5 right-5 z-30 flex flex-col items-center gap-2">
+        <button id="jump-prev" onclick="jumpSection(-1)" title="Previous section"
+                class="scroll-jump-btn w-10 h-10 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 text-slate-600 shadow-md flex items-center justify-center">
+            <i class="fa-solid fa-chevron-up text-xs"></i>
+        </button>
+
+        <div id="jump-indicator" class="hidden sm:block text-[8px] font-mono tracking-widest uppercase text-slate-500 bg-white/95 backdrop-blur-md border border-slate-200 px-2 py-1 rounded-lg shadow-sm max-w-[92px] truncate text-center">
+            Home
+        </div>
+
+        <button id="jump-next" onclick="jumpSection(1)" title="Next section"
+                class="scroll-jump-btn w-10 h-10 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 text-slate-600 shadow-md flex items-center justify-center">
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+        </button>
+
+        <button id="jump-top" onclick="scrollToSection('hero')" title="Back to top"
+                class="scroll-jump-btn w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 border border-indigo-500/40 text-white shadow-lg shadow-indigo-600/25 flex items-center justify-center mt-1">
+            <i class="fa-solid fa-arrow-up text-xs"></i>
+        </button>
+    </div>
+
     <main class="flex-grow relative z-10">
         <!-- ==================== HERO SECTION ==================== -->
-        <section class="relative pt-12 pb-20 md:pt-24 md:pb-28 overflow-hidden">
+        <section id="hero" class="relative pt-12 pb-20 md:pt-24 md:pb-28 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-4xl mx-auto">
                     
                     <!-- Competition Tag -->
-                    <div class="rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-[11px] font-mono tracking-widest uppercase mb-8 backdrop-blur-md shadow-sm" style="--d: 80">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-[11px] font-mono tracking-widest uppercase mb-8 backdrop-blur-md shadow-sm">
                         <i class="fa-solid fa-layer-group text-sky-600"></i>
                         <span>TECHNOMENTRIX Competition Prototype</span>
                     </div>
 
-                    <!-- Minimalist Heavenly Heading (word-by-word liquid rise) -->
-                    <h1 class="word-rise text-4xl sm:text-6xl lg:text-7xl font-extralight tracking-tight text-slate-900 leading-[1.25] mb-8 relative inline-block">
-                        <span class="relative z-10" style="--w: 0">Human</span>
-                        <span class="relative z-10" style="--w: 1">Cognition,</span>
-                        <br />
-                        <span class="gradient-text font-semibold font-serif italic relative z-10" style="--w: 2">Amplified</span>
-                        <span class="gradient-text font-semibold font-serif italic relative z-10" style="--w: 3">By</span>
-                        <span class="gradient-text font-semibold font-serif italic relative z-10" style="--w: 4">AI</span>
-                        <span class="gradient-text font-semibold font-serif italic relative z-10 pr-6" style="--w: 5">Mentorship</span>
+                    <!-- Minimalist Heavenly Heading -->
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extralight tracking-tight text-slate-900 leading-[1.25] mb-8 relative inline-block">
+                        <span class="relative z-10">Human Cognition, <br /></span>
+                        <span class="gradient-text font-semibold font-serif italic relative z-10 pr-6">
+                            Amplified By AI Mentorship
+                        </span>
                         <div class="absolute inset-0 bg-indigo-200/40 filter blur-3xl rounded-full -z-10 animate-pulse-slow"></div>
                     </h1>
 
-                    <p class="rise text-base sm:text-lg text-slate-600 leading-relaxed mb-6 max-w-2xl mx-auto font-light tracking-wide" style="--d: 760">
+                    <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto font-light tracking-wide">
                         An interactive knowledge portal quantifying how artificial intelligence elevates comprehension for <strong class="text-slate-900 font-normal">Students</strong>, operational speed for <strong class="text-slate-900 font-normal">Teachers</strong>, and career trajectory for <strong class="text-slate-900 font-normal">Professionals</strong>.
                     </p>
 
-                    <!-- Live Rotating Capability Ticker -->
-                    <div class="rise flex items-center justify-center gap-3 mb-10 text-xs font-mono tracking-widest uppercase text-slate-500" style="--d: 880">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Now amplifying</span>
-                        <span id="hero-ticker" class="gradient-text font-bold not-italic">deep comprehension</span>
-                    </div>
-
                     <!-- CTA Buttons -->
-                    <div class="rise flex flex-col sm:flex-row items-center justify-center gap-4 mb-16" style="--d: 980">
-                        <a href="#prompt-library" class="magnetic ripple-host w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 text-white font-mono text-xs tracking-[0.15em] uppercase font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-2.5">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                        <a href="#prompt-library" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 text-white font-mono text-xs tracking-[0.15em] uppercase font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.01] transition-all flex items-center justify-center gap-2.5">
                             <i class="fa-solid fa-wand-magic-sparkles text-sky-200"></i>
                             <span>Explore Prompt Architecture</span>
                         </a>
 
-                        <a href="#readiness" class="magnetic ripple-host w-full sm:w-auto px-7 py-4 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-mono text-xs tracking-[0.15em] uppercase font-medium border border-slate-200/90 transition-all duration-300 flex items-center justify-center gap-2.5 shadow-sm">
-                            <i class="fa-solid fa-gauge-high text-base text-emerald-600"></i>
-                            <span>Test My AI Readiness</span>
-                            <i class="fa-solid fa-arrow-down text-[10px] text-slate-400"></i>
+                        <a href="https://github.com/shivasharma12342012-commits/technomentrix-ai-mentor" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-7 py-4 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-mono text-xs tracking-[0.15em] uppercase font-medium border border-slate-200/90 transition-all duration-300 flex items-center justify-center gap-2.5 shadow-sm">
+                            <i class="fa-brands fa-github text-base text-slate-900"></i>
+                            <span>GitHub Source</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-400"></i>
                         </a>
                     </div>
 
-                    <!-- Macro Indicators Grid (animated count-up) -->
-                    <div class="scroll-reveal glass-panel glass-card-glow lg-spot lg-ring rounded-2xl p-6 sm:p-8 border border-slate-200/80 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
-                        <span class="lg-ring-line"></span>
+                    <!-- Macro Indicators Grid -->
+                    <div class="scroll-reveal glass-panel glass-card-glow rounded-2xl p-6 sm:p-8 border border-slate-200/80 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
                         <div class="reactive-stat-box p-4 rounded-xl border border-slate-200/70">
-                            <div class="text-2xl sm:text-3xl font-extralight text-indigo-600 font-mono mb-1" data-countup="3.5" data-decimals="1" data-suffix="x">0.0x</div>
+                            <div class="text-2xl sm:text-3xl font-extralight text-indigo-600 font-mono mb-1">3.5x</div>
                             <div class="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-slate-500">Learning Speed</div>
                         </div>
                         <div class="reactive-stat-box p-4 rounded-xl border border-slate-200/70">
-                            <div class="text-2xl sm:text-3xl font-extralight text-purple-600 font-mono mb-1" data-countup="65" data-suffix="%">0%</div>
+                            <div class="text-2xl sm:text-3xl font-extralight text-purple-600 font-mono mb-1">65%</div>
                             <div class="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-slate-500">Teacher Time Saved</div>
                         </div>
                         <div class="reactive-stat-box p-4 rounded-xl border border-slate-200/70">
@@ -1019,7 +654,7 @@
                             <div class="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-slate-500">Socratic Mentor</div>
                         </div>
                         <div class="reactive-stat-box p-4 rounded-xl border border-slate-200/70">
-                            <div class="text-2xl sm:text-3xl font-extralight text-emerald-600 font-mono mb-1" data-countup="100" data-suffix="%">0%</div>
+                            <div class="text-2xl sm:text-3xl font-extralight text-emerald-600 font-mono mb-1">100%</div>
                             <div class="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-slate-500">Zero Overhead</div>
                         </div>
                     </div>
@@ -1034,7 +669,7 @@
                 
                 <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-indigo-600 mb-2 block">Visual Scrollytelling Journey</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">The Cognitive Evolution Arc</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">The Cognitive Evolution Arc</h2>
                     <p class="text-slate-600 text-sm mt-3 font-light tracking-wide">Scroll down to observe how AI mentorship systematically deconstructs learning friction.</p>
                 </div>
 
@@ -1042,7 +677,7 @@
                     
                     <!-- Sticky Visual Monitor (Left Column) -->
                     <div class="lg:col-span-5">
-                        <div class="sticky-monitor glass-panel glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/90 shadow-xl relative overflow-hidden">
+                        <div class="sticky-monitor glass-panel glass-card-glow rounded-2xl p-6 border border-slate-200/90 shadow-xl relative overflow-hidden">
                             <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span>
@@ -1128,14 +763,14 @@
                 
                 <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3 inline-block">Zero-Cost AI Directory</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Free AI Ecosystem & Role Impact</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Free AI Ecosystem & Role Impact</h2>
                     <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Direct access to leading AI engines detailing specific operational advantages for each user role.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                     
                     <!-- TOOL 1: GEMINI -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-200/80 flex items-center justify-center text-indigo-600 text-xl">
@@ -1174,7 +809,7 @@
                     </div>
 
                     <!-- TOOL 2: CHATGPT -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-purple-50 border border-purple-200/80 flex items-center justify-center text-purple-600 text-xl">
@@ -1213,7 +848,7 @@
                     </div>
 
                     <!-- TOOL 3: NOTEBOOKLM -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200/80 flex items-center justify-center text-sky-600 text-xl">
@@ -1252,7 +887,7 @@
                     </div>
 
                     <!-- TOOL 4: PERPLEXITY -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 text-xl">
@@ -1291,7 +926,7 @@
                     </div>
 
                     <!-- TOOL 5: CLAUDE -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 text-xl">
@@ -1330,7 +965,7 @@
                     </div>
 
                     <!-- TOOL 6: GAMMA APP -->
-                    <div class="scroll-reveal glass-panel glass-card-hover lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div class="scroll-reveal glass-panel glass-card-hover rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-5">
                                 <div class="w-11 h-11 rounded-xl bg-pink-50 border border-pink-200/80 flex items-center justify-center text-pink-600 text-xl">
@@ -1379,7 +1014,7 @@
                 
                 <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-purple-700 bg-purple-50 px-3 py-1 rounded-full border border-purple-200 mb-3 inline-block">Role Breakdown</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Multi-Persona Transformation Engine</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Multi-Persona Transformation Engine</h2>
                     <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Select a persona tab to analyze concrete workflow shifts and performance indicators.</p>
                 </div>
 
@@ -1415,7 +1050,7 @@
                 
                 <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3 inline-block">Data Visualizer</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Competency & Output Benchmarks</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Competency & Output Benchmarks</h2>
                     <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Select a metric indicator to observe comparative efficiency gains.</p>
                 </div>
 
@@ -1435,7 +1070,7 @@
                 </div>
 
                 <!-- Benchmark Card -->
-                <div class="max-w-4xl mx-auto glass-panel glass-card-glow lg-spot lg-ring rounded-2xl p-6 sm:p-8 border border-slate-200/90 scroll-reveal">
+                <div class="max-w-4xl mx-auto glass-panel glass-card-glow rounded-2xl p-6 sm:p-8 border border-slate-200/90 scroll-reveal">
                     <div class="flex items-center justify-between mb-8">
                         <div>
                             <h4 id="bm-title" class="text-base sm:text-lg font-bold text-slate-900">Knowledge Retention Rate</h4>
@@ -1498,7 +1133,7 @@
                     </div>
 
                     <div class="lg:col-span-7 scroll-reveal">
-                        <div class="glass-panel glass-card-glow lg-spot lg-ring rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-xl space-y-6">
+                        <div class="glass-panel glass-card-glow rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-xl space-y-6">
                             
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -1519,7 +1154,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="calculateAIImpact()" class="magnetic ripple-host w-full py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 hover:opacity-95 text-white font-mono text-xs uppercase tracking-widest font-bold rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2">
+                            <button onclick="calculateAIImpact()" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 hover:opacity-95 text-white font-mono text-xs uppercase tracking-widest font-bold rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-bolt"></i>
                                 <span>Calculate Time Saved</span>
                             </button>
@@ -1563,77 +1198,13 @@
             </div>
         </section>
 
-        <!-- ==================== AI READINESS DIAGNOSTIC (NEW) ==================== -->
-        <section id="readiness" class="py-20 md:py-24 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                <div class="text-center max-w-3xl mx-auto mb-14 scroll-reveal">
-                    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3 inline-block">Interactive Diagnostic</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">Measure Your AI Readiness Score</h2>
-                    <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Six calibrated questions. One personalised maturity score, tier, and next-step plan.</p>
-                </div>
-
-                <div class="max-w-3xl mx-auto glass-panel glass-card-glow lg-spot lg-ring rounded-3xl p-6 sm:p-10 border border-slate-200/90 scroll-reveal">
-                    <span class="lg-ring-line"></span>
-
-                    <!-- Progress rail -->
-                    <div id="quiz-progress-wrap" class="flex items-center justify-between mb-8">
-                        <div class="flex items-center gap-2" id="quiz-dots"></div>
-                        <span id="quiz-counter" class="text-[10px] font-mono tracking-widest uppercase text-slate-500">Question 01 / 06</span>
-                    </div>
-
-                    <!-- Question slides injected by JS -->
-                    <div id="quiz-stage"></div>
-
-                    <!-- Result panel -->
-                    <div id="quiz-result" class="hidden text-center">
-                        <div class="relative inline-grid place-items-center mb-6">
-                            <svg width="180" height="180" viewBox="0 0 100 100" class="-rotate-90">
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" class="text-slate-200" stroke-width="7" />
-                                <circle id="gauge-arc" cx="50" cy="50" r="40" fill="none" stroke="url(#gauge-grad)" stroke-width="7" stroke-linecap="round" />
-                                <defs>
-                                    <linearGradient id="gauge-grad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#4F46E5" />
-                                        <stop offset="0.5" stop-color="#A855F7" />
-                                        <stop offset="1" stop-color="#38BDF8" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <div class="absolute inset-0 grid place-items-center">
-                                <div>
-                                    <div id="quiz-score" class="text-4xl font-mono font-light text-slate-900">0</div>
-                                    <div class="text-[9px] font-mono tracking-[0.2em] uppercase text-slate-500">/ 100 Score</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <span id="quiz-tier" class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full border inline-block mb-3">Explorer</span>
-                        <h3 id="quiz-headline" class="text-xl sm:text-2xl font-light text-slate-900 font-serif mb-3">Your AI Maturity Profile</h3>
-                        <p id="quiz-summary" class="text-xs sm:text-sm text-slate-600 font-light leading-relaxed max-w-xl mx-auto mb-7"></p>
-
-                        <div id="quiz-actions" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left mb-7"></div>
-
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                            <button onclick="restartQuiz()" class="magnetic ripple-host px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-mono text-[11px] uppercase tracking-widest border border-slate-200 transition-all">
-                                <i class="fa-solid fa-rotate-left mr-2"></i>Retake Diagnostic
-                            </button>
-                            <a href="#roadmaps" class="magnetic ripple-host px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 text-white font-mono text-[11px] uppercase tracking-widest shadow-md shadow-indigo-500/25 transition-all">
-                                <i class="fa-solid fa-route mr-2"></i>Open My Roadmap
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
         <!-- ==================== ADOPTION ROADMAP ENGINE ==================== -->
         <section id="roadmaps" class="py-20 md:py-24 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3 inline-block">Sequential Path</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">3-Stage AI Adoption Roadmap</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">3-Stage AI Adoption Roadmap</h2>
                     <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Structured progression from basic assistance to full workflow automation.</p>
                 </div>
 
@@ -1664,7 +1235,7 @@
                 
                 <div class="text-center max-w-3xl mx-auto mb-14 scroll-reveal">
                     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 mb-3 inline-block">Production Prompt Bank</span>
-                    <h2 class="title-sheen text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">AI Prompt Architecture Library</h2>
+                    <h2 class="text-3xl sm:text-4xl font-light text-slate-900 font-serif italic">AI Prompt Architecture Library</h2>
                     <p class="text-slate-600 text-xs sm:text-sm mt-3 font-light tracking-wide">Copy production-ready prompt templates designed for high-precision outputs.</p>
                 </div>
 
@@ -1683,34 +1254,14 @@
                         <button onclick="filterPrompts('career', this)" class="prompt-tab px-4 sm:px-5 py-2.5 rounded-xl text-[11px] font-mono tracking-wider uppercase font-semibold transition-all duration-150 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60">
                             Career & Engineering
                         </button>
-                        <button onclick="filterPrompts('favourites', this)" class="prompt-tab px-4 sm:px-5 py-2.5 rounded-xl text-[11px] font-mono tracking-wider uppercase font-semibold transition-all duration-150 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60 flex items-center gap-2">
-                            <i class="fa-solid fa-star text-amber-500"></i>
-                            <span>Saved <span id="fav-count">(0)</span></span>
-                        </button>
                     </div>
-                </div>
-
-                <!-- Live Prompt Search -->
-                <div class="max-w-xl mx-auto mb-10 scroll-reveal">
-                    <div class="liquid-glass lg-spot rounded-2xl px-4 py-3 border border-slate-200/80 flex items-center gap-3">
-                        <i class="fa-solid fa-magnifying-glass text-emerald-600 text-sm"></i>
-                        <input id="prompt-search" type="text" placeholder="Search prompts — try 'rubric', 'code', 'flashcard'…"
-                               class="w-full bg-transparent border-none focus:outline-none text-sm text-slate-800 placeholder-slate-400" />
-                        <span id="prompt-search-count" class="text-[10px] font-mono text-slate-500 whitespace-nowrap">6 shown</span>
-                    </div>
-                </div>
-
-                <!-- Empty state -->
-                <div id="prompt-empty" class="hidden text-center py-14 text-slate-500 font-mono text-xs">
-                    <i class="fa-regular fa-face-smile text-2xl block mb-3 text-slate-400"></i>
-                    No prompts match that search yet — try a broader keyword.
                 </div>
 
                 <!-- PRE-RENDERED PROMPT GRID (Instant 0ms Toggling) -->
                 <div id="prompt-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
                     
                     <!-- Prompt 1 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="academic">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="academic">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">Students</span>
@@ -1732,7 +1283,7 @@
                     </div>
 
                     <!-- Prompt 2 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="academic">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="academic">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">Students</span>
@@ -1754,7 +1305,7 @@
                     </div>
 
                     <!-- Prompt 3 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="teaching">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="teaching">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded border border-purple-200">Teachers</span>
@@ -1776,7 +1327,7 @@
                     </div>
 
                     <!-- Prompt 4 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="teaching">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="teaching">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded border border-purple-200">Teachers</span>
@@ -1798,7 +1349,7 @@
                     </div>
 
                     <!-- Prompt 5 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="career">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="career">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded border border-sky-200">Professionals</span>
@@ -1820,7 +1371,7 @@
                     </div>
 
                     <!-- Prompt 6 -->
-                    <div class="prompt-card glass-card glass-card-glow lg-spot rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="career">
+                    <div class="prompt-card glass-card glass-card-glow rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between" data-category="career">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded border border-sky-200">Professionals</span>
@@ -1884,10 +1435,10 @@
             <!-- MANDATED COMPETITION CREDITS -->
             <div class="py-10 text-center space-y-3">
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-widest font-mono uppercase">
-                    MADE BY - SHIVA AND PRABHJOT CLASS IX-A
+                    MADE BY - SHIVA AND PRABHJOT CLASS IX-C AND IX-A RESPECTIVELY
                 </h3>
                 <h4 class="text-xs sm:text-sm font-extrabold text-sky-700 tracking-[0.2em] font-mono uppercase">
-                    SCHOOL: DELHI INTERNATIONAL SCHOOL EDGE
+                    SCHOOL = DELHI INTERNATIONAL SCHOOL EDGE
                 </h4>
                 <p class="text-xs text-slate-500 font-light pt-1 tracking-wider">
                     Developed & Engineered for the TECHNOMENTRIX Web Design Competition
@@ -1903,57 +1454,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- ==================== DEEP FOCUS SESSION DOCK ==================== -->
-    <div id="focus-dock" class="lg-dock" role="region" aria-label="Deep focus session timer">
-        <div class="flex items-start justify-between mb-3">
-            <div>
-                <div class="text-[9px] font-mono tracking-[0.2em] uppercase text-slate-500">Deep Focus</div>
-                <div id="focus-mode-label" class="text-xs font-mono font-bold text-indigo-600">Study Sprint</div>
-            </div>
-            <button onclick="toggleFocusDock()" class="text-slate-400 hover:text-slate-700 transition-colors text-xs" aria-label="Close focus timer">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <div id="focus-ring" class="focus-ring" style="--p: 0">
-                <span id="focus-time" class="text-sm font-mono font-bold text-slate-900">25:00</span>
-            </div>
-
-            <div class="flex-1 space-y-2">
-                <button id="focus-toggle" onclick="toggleFocusTimer()" class="ripple-host w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-mono text-[10px] uppercase tracking-widest transition-all shadow-sm">
-                    <i class="fa-solid fa-play mr-1.5"></i>Start
-                </button>
-                <button onclick="resetFocusTimer()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] uppercase tracking-widest border border-slate-200 transition-all">
-                    Reset
-                </button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-1.5 mt-3 pt-3 border-t border-slate-200">
-            <button onclick="setFocusMode('sprint')" data-focus-mode="sprint" class="focus-mode-btn py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-wider bg-indigo-600 text-white transition-all">25m</button>
-            <button onclick="setFocusMode('deep')" data-focus-mode="deep" class="focus-mode-btn py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-wider text-slate-600 hover:bg-slate-100 transition-all">50m</button>
-            <button onclick="setFocusMode('break')" data-focus-mode="break" class="focus-mode-btn py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-wider text-slate-600 hover:bg-slate-100 transition-all">5m</button>
-        </div>
-
-        <div class="mt-3 text-[9px] font-mono tracking-wider text-slate-500 flex items-center justify-between">
-            <span>Sessions today</span>
-            <span id="focus-count" class="text-emerald-600 font-bold">0</span>
-        </div>
-    </div>
-
-    <!-- ==================== SCROLL PROGRESS ORB ==================== -->
-    <button id="to-top" class="lg-dock ripple-host" style="--p: 0" onclick="scrollToTop()" aria-label="Back to top">
-        <span class="ring" aria-hidden="true"></span>
-        <i class="fa-solid fa-arrow-up text-indigo-600 text-sm relative"></i>
-    </button>
-
-    <!-- ==================== GLASS TOAST ==================== -->
-    <div id="lg-toast" class="lg-dock font-mono text-slate-800" role="status" aria-live="polite">
-        <i id="lg-toast-icon" class="fa-solid fa-circle-check text-emerald-500"></i>
-        <span id="lg-toast-text">Done</span>
-    </div>
 
     <!-- COMMAND PALETTE MODAL OVERLAY (Cmd/Ctrl + K) -->
     <div id="cmd-palette" class="fixed inset-0 z-50 hidden flex items-start justify-center pt-20 px-4">
@@ -1976,8 +1476,568 @@
 
     <!-- JAVASCRIPT & ANIMATION ENGINES -->
     <script>
+        /* ============================================================================
+           ██  AI NAVIGATOR CONFIGURATION  ██
+           ----------------------------------------------------------------------------
+           >>> PASTE YOUR TINYFISH API KEY BETWEEN THE QUOTES ON THE LINE BELOW <<<
+
+           Example:  TINYFISH_API_KEY: "tf_live_abc123xyz...",
+
+           Get a key from https://agent.tinyfish.ai
+
+           NOTE: A key hard-coded here is visible to anyone who views the page source
+           of your live site. That is fine for a competition demo. If this ever goes
+           properly public, route the request through a small server instead and leave
+           this blank — the navigator works perfectly without a key either way.
+           ============================================================================ */
+        const AI_NAV_CONFIG = {
+
+            TINYFISH_API_KEY: "sk-tinyfish-_yJNzOjDlD3c5r-6noI0Wg6EPQx14vR0",   // <-- ⬅️  YOUR TINYFISH API KEY GOES HERE
+
+            // TinyFish Search API — returns ranked live web results for a query.
+            SEARCH_ENDPOINT: "https://api.search.tinyfish.ai",
+            LANGUAGE: "en",         // e.g. "en"
+            LOCATION: "",           // optional country code, e.g. "IN" or "US"
+            MAX_WEB_RESULTS: 4,
+
+            // Sent as the `purpose` param so TinyFish knows the intent behind the query.
+            PURPOSE: "Find trustworthy, up-to-date information about AI tools for students, teachers and working professionals, to support an educational AI-mentorship website."
+        };
+
+        /* ============================================================================
+           SITE SECTION REGISTRY
+           Single source of truth for the nav bar, the section rail, the mobile menu,
+           the command palette and the AI navigator's routing brain.
+           ============================================================================ */
+        const SITE_SECTIONS = [
+            {
+                id: 'hero', label: 'Home', short: 'Home', icon: 'fa-house',
+                summary: 'The opening overview of AetherAI and its headline impact numbers.',
+                keywords: ['home', 'top', 'start', 'intro', 'introduction', 'overview', 'hero', 'beginning', 'aetherai', 'about', 'what is this']
+            },
+            {
+                id: 'scrollytelling', label: 'Cognitive Arc', short: 'Journey', icon: 'fa-timeline',
+                summary: 'A four-stage visual story of how AI mentorship dismantles learning friction, from cognitive overload to full mastery.',
+                keywords: ['story', 'journey', 'arc', 'stage', 'stages', 'friction', 'overload', 'decomposition', 'synthesis', 'mastery', 'narrative', 'evolution', 'process', 'how it works', 'struggle', 'work', 'works', 'working', 'explain', 'explanation', 'understand', 'concept', 'learning', 'cognitive', 'mentorship']
+            },
+            {
+                id: 'free-tools', label: 'Free AI Tools', short: 'Tools', icon: 'fa-toolbox',
+                summary: 'A directory of six free AI engines — Gemini, ChatGPT, NotebookLM, Perplexity, Claude and Gamma — with what each one does for every role.',
+                keywords: ['tool', 'tools', 'free', 'gemini', 'chatgpt', 'openai', 'notebooklm', 'perplexity', 'claude', 'anthropic', 'gamma', 'app', 'apps', 'directory', 'which ai', 'best ai', 'software', 'platform', 'website', 'recommend', 'use', 'cost', 'price']
+            },
+            {
+                id: 'persona-matrix', label: 'Persona Matrix', short: 'Personas', icon: 'fa-users',
+                summary: 'A role-by-role breakdown of exactly what changes for students, teachers and working professionals.',
+                keywords: ['persona', 'personas', 'student', 'students', 'teacher', 'teachers', 'educator', 'professional', 'professionals', 'role', 'benefit', 'benefits', 'matrix', 'before', 'after', 'comparison', 'who', 'impact', 'advantage']
+            },
+            {
+                id: 'benchmarks', label: 'Benchmarks', short: 'Data', icon: 'fa-chart-simple',
+                summary: 'Comparative benchmark graphs for memory retention, grading velocity and code audit speed.',
+                keywords: ['benchmark', 'benchmarks', 'data', 'graph', 'chart', 'retention', 'memory', 'remember', 'grading', 'velocity', 'code audit', 'speed', 'statistic', 'statistics', 'stats', 'proof', 'numbers', 'evidence', 'research', 'measure', 'compare']
+            },
+            {
+                id: 'calculator', label: 'ROI Calculator', short: 'ROI', icon: 'fa-calculator',
+                summary: 'An interactive calculator that turns your weekly task hours into monthly and yearly hours saved.',
+                keywords: ['calculator', 'calculate', 'roi', 'time', 'hour', 'hours', 'saved', 'save', 'saving', 'savings', 'impact', 'money', 'value', 'efficiency', 'return', 'worth', 'how much', 'weekly', 'monthly', 'yearly']
+            },
+            {
+                id: 'roadmaps', label: 'Adoption Roadmaps', short: 'Roadmap', icon: 'fa-route',
+                summary: 'Three-stage adoption roadmaps showing how each persona should progress from basic AI help to full workflow automation.',
+                keywords: ['roadmap', 'roadmaps', 'path', 'plan', 'stage', 'adoption', 'how to start', 'getting started', 'step', 'steps', 'learn', 'beginner', 'progression', 'next', 'guide', 'where do i begin', 'first']
+            },
+            {
+                id: 'prompt-library', label: 'Prompt Library', short: 'Prompts', icon: 'fa-terminal',
+                summary: 'Copy-ready prompt templates for studying, lesson planning, rubrics, code audits and executive summaries.',
+                keywords: ['prompt', 'prompts', 'template', 'templates', 'copy', 'library', 'socratic', 'rubric', 'flashcard', 'refactor', 'essay', 'write', 'writing', 'example', 'examples', 'ask ai', 'wording', 'architecture']
+            }
+        ];
+
+        const NAV_STOPWORDS = new Set(['a','an','the','is','are','was','were','do','does','did','can','could','should','would','will','how','what','where','when','which','who','why','i','me','my','we','our','you','your','to','for','of','on','in','at','it','this','that','and','or','with','from','get','got','find','show','take','give','tell','about','be','have','has','if','so','as','by','into','more','much','many','some','any','best','good','please','want','need','help','use','using']);
+
+        const HEADER_OFFSET = 96;
+        let currentSectionIndex = 0;
+
+        /* ================= CORE SCROLLING ================= */
+        function scrollToSection(id) {
+            const target = document.getElementById(id);
+            if (!target) return;
+
+            closeAiNavigator();
+            closeCmdPalette();
+
+            const top = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+            window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+        }
+
+        // Steps one section up (-1) or down (+1) — the scroll navigator arrows.
+        function jumpSection(direction) {
+            const next = currentSectionIndex + direction;
+            if (next < 0 || next >= SITE_SECTIONS.length) return;
+            scrollToSection(SITE_SECTIONS[next].id);
+        }
+
+        /* ================= NAVIGATOR CONSTRUCTION ================= */
+        function buildNavigator() {
+            // 1. Desktop top bar — the five headline destinations keep the bar uncluttered.
+            const desktopIds = ['scrollytelling', 'free-tools', 'persona-matrix', 'calculator', 'prompt-library'];
+            const desktopNav = document.getElementById('desktop-nav');
+            if (desktopNav) {
+                desktopNav.innerHTML = SITE_SECTIONS
+                    .filter(s => desktopIds.includes(s.id))
+                    .map(s => `<a href="#${s.id}" data-section="${s.id}" class="nav-link hover:text-indigo-600 transition-colors whitespace-nowrap">${s.short}</a>`)
+                    .join('');
+            }
+
+            // 2. Vertical right-edge rail — every section, always one click away.
+            const rail = document.getElementById('section-rail');
+            if (rail) {
+                rail.innerHTML = SITE_SECTIONS.map(s => `
+                    <button onclick="scrollToSection('${s.id}')" data-section="${s.id}"
+                            class="rail-item group flex items-center justify-center" title="${s.label}" aria-label="${s.label}">
+                        <span class="rail-label text-[9px] font-mono uppercase tracking-widest text-slate-600 bg-white/95 backdrop-blur-md border border-slate-200 px-2 py-1 rounded-md shadow-sm">${s.label}</span>
+                        <span class="rail-dot"></span>
+                    </button>
+                `).join('');
+            }
+
+            // 3. Mobile drawer — full numbered list.
+            const mobileLinks = document.getElementById('mobile-nav-links');
+            if (mobileLinks) {
+                mobileLinks.innerHTML = SITE_SECTIONS.map((s, i) => `
+                    <a href="#${s.id}" data-section="${s.id}" class="mobile-link flex items-center gap-3 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/70 px-3 py-2.5 rounded-xl font-mono text-xs uppercase tracking-wider transition-colors">
+                        <i class="fa-solid ${s.icon} text-indigo-500 w-4 text-center"></i>
+                        <span class="text-slate-400">${String(i + 1).padStart(2, '0')}</span>
+                        <span>${s.label}</span>
+                    </a>
+                `).join('');
+            }
+
+            // 4. Route every in-page anchor through the offset-aware scroller.
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#') {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        return;
+                    }
+                    const target = document.getElementById(href.slice(1));
+                    if (target) {
+                        e.preventDefault();
+                        scrollToSection(href.slice(1));
+                    }
+                });
+            });
+        }
+
+        // Paints the active state across the top bar, the rail and the floating cluster.
+        function setActiveSection(id) {
+            const index = SITE_SECTIONS.findIndex(s => s.id === id);
+            if (index === -1) return;
+            currentSectionIndex = index;
+
+            document.querySelectorAll('#desktop-nav a[data-section]').forEach(link => {
+                link.classList.toggle('nav-active', link.dataset.section === id);
+            });
+
+            document.querySelectorAll('#section-rail .rail-item').forEach(item => {
+                item.classList.toggle('rail-active', item.dataset.section === id);
+            });
+
+            document.querySelectorAll('#mobile-nav-links .mobile-link').forEach(link => {
+                link.classList.toggle('text-indigo-600', link.dataset.section === id);
+                link.classList.toggle('bg-indigo-50/70', link.dataset.section === id);
+            });
+
+            const indicator = document.getElementById('jump-indicator');
+            if (indicator) indicator.textContent = SITE_SECTIONS[index].label;
+
+            const prevBtn = document.getElementById('jump-prev');
+            const nextBtn = document.getElementById('jump-next');
+            if (prevBtn) prevBtn.disabled = index === 0;
+            if (nextBtn) nextBtn.disabled = index === SITE_SECTIONS.length - 1;
+        }
+
+        /* ============================================================================
+           AI NAVIGATOR — ROUTING BRAIN
+           Scores the user's question against every section locally (instant, works
+           offline), then optionally enriches the answer with live TinyFish web results.
+           ============================================================================ */
+        function scoreSections(query) {
+            const q = query.toLowerCase().trim();
+            const words = q.split(/[^a-z0-9]+/).filter(w => w.length > 2 && !NAV_STOPWORDS.has(w));
+
+            return SITE_SECTIONS.map(section => {
+                let score = 0;
+
+                // Whole-phrase keyword hits are the strongest signal.
+                section.keywords.forEach(kw => {
+                    if (q.includes(kw)) score += kw.includes(' ') ? 6 : 4;
+                });
+
+                // Individual word hits against keywords, label and summary.
+                const haystack = `${section.label} ${section.short} ${section.summary}`.toLowerCase();
+                words.forEach(w => {
+                    if (section.keywords.some(kw => kw.startsWith(w) || w.startsWith(kw))) score += 3;
+                    if (haystack.includes(w)) score += 2;
+                });
+
+                return { section, score };
+            })
+            .sort((a, b) => b.score - a.score);
+        }
+
+        /* localStorage can throw (private mode, sandboxed frames, file:// previews),
+           so every access is guarded — a storage failure must never break navigation. */
+        function safeStorageGet(key) {
+            try { return localStorage.getItem(key) || ''; }
+            catch (e) { return ''; }
+        }
+
+        function safeStorageSet(key, value) {
+            try { localStorage.setItem(key, value); return true; }
+            catch (e) { return false; }
+        }
+
+        function safeStorageRemove(key) {
+            try { localStorage.removeItem(key); } catch (e) { /* nothing to clean up */ }
+        }
+
+        function getTinyFishKey() {
+            const stored = safeStorageGet('tinyfish_api_key').trim();
+            return stored || AI_NAV_CONFIG.TINYFISH_API_KEY.trim();
+        }
+
+        function refreshAiKeyStatus() {
+            const hasKey = !!getTinyFishKey();
+            const dot = document.getElementById('ai-key-dot');
+            const label = document.getElementById('ai-mode-label');
+
+            if (dot) {
+                dot.className = `w-1.5 h-1.5 rounded-full ${hasKey ? 'bg-emerald-300' : 'bg-amber-300'}`;
+                dot.title = hasKey ? 'TinyFish connected' : 'Local mode — no API key set';
+            }
+            if (label) {
+                label.textContent = hasKey ? 'TinyFish Live Intelligence Connected' : 'Local Intelligence Mode';
+                label.className = `text-[9px] font-mono uppercase tracking-widest ${hasKey ? 'text-emerald-600' : 'text-amber-600'}`;
+            }
+        }
+
+        // Calls the TinyFish Search API for live, ranked web results.
+        async function tinyFishSearch(query) {
+            const key = getTinyFishKey();
+            if (!key) return null;
+
+            const url = new URL(AI_NAV_CONFIG.SEARCH_ENDPOINT);
+            url.searchParams.set('query', query);
+            url.searchParams.set('purpose', AI_NAV_CONFIG.PURPOSE);
+            if (AI_NAV_CONFIG.LANGUAGE) url.searchParams.set('language', AI_NAV_CONFIG.LANGUAGE);
+            if (AI_NAV_CONFIG.LOCATION) url.searchParams.set('location', AI_NAV_CONFIG.LOCATION);
+
+            const response = await fetch(url.toString(), {
+                method: 'GET',
+                headers: { 'X-API-Key': key }
+            });
+
+            if (!response.ok) {
+                throw new Error(response.status === 401 || response.status === 403
+                    ? 'API key was rejected (401/403). Check the key is correct and active.'
+                    : `TinyFish returned HTTP ${response.status}.`);
+            }
+
+            const data = await response.json();
+            return Array.isArray(data.results) ? data.results.slice(0, AI_NAV_CONFIG.MAX_WEB_RESULTS) : [];
+        }
+
+        async function runAiNavigator(presetQuery) {
+            const input = document.getElementById('ai-nav-input');
+            const results = document.getElementById('ai-nav-results');
+            if (!results) return;
+
+            if (presetQuery && input) input.value = presetQuery;
+            const query = (presetQuery || (input ? input.value : '')).trim();
+
+            openAiNavigator();
+
+            if (!query) {
+                renderAiIdleState();
+                return;
+            }
+
+            const ranked = scoreSections(query);
+            const best = ranked[0];
+            const hasKey = !!getTinyFishKey();
+
+            // Too weak to be trustworthy — show the full map instead of guessing
+            // confidently at a section the question never really pointed to.
+            const MIN_CONFIDENT_SCORE = 4;
+            if (!best || best.score < MIN_CONFIDENT_SCORE) {
+                results.innerHTML = `
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 font-light mb-3">
+                        <i class="fa-solid fa-circle-question mr-1.5"></i>
+                        Nothing matched <strong>"${escapeHtml(query)}"</strong> strongly enough to jump automatically. Pick a destination:
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        ${SITE_SECTIONS.map(s => aiSectionChip(s)).join('')}
+                    </div>`;
+                return;
+            }
+
+            const alternates = ranked.slice(1, 4).filter(r => r.score > 0);
+            const confidence = Math.min(99, Math.round((best.score / (best.score + 6)) * 100));
+
+            results.innerHTML = `
+                <div class="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50/90 to-purple-50/60 p-4 mb-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-indigo-700">Best Match — Navigating</span>
+                        <span class="text-[9px] font-mono text-indigo-600 bg-white/80 border border-indigo-200 px-2 py-0.5 rounded-full">${confidence}% confidence</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="w-9 h-9 shrink-0 rounded-xl bg-white border border-indigo-200 flex items-center justify-center text-indigo-600">
+                            <i class="fa-solid ${best.section.icon}"></i>
+                        </span>
+                        <div class="flex-grow">
+                            <h5 class="text-sm font-bold text-slate-900">${best.section.label}</h5>
+                            <p class="text-xs text-slate-600 font-light mt-1 leading-relaxed">${best.section.summary}</p>
+                        </div>
+                        <button onclick="scrollToSection('${best.section.id}')" class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-mono uppercase tracking-widest transition-colors">
+                            Go
+                        </button>
+                    </div>
+                </div>
+
+                ${alternates.length ? `
+                    <div class="mb-3">
+                        <div class="text-[9px] font-mono uppercase tracking-widest text-slate-500 mb-2">Also Relevant</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            ${alternates.map(r => aiSectionChip(r.section)).join('')}
+                        </div>
+                    </div>` : ''}
+
+                <div id="ai-web-results">
+                    ${hasKey ? `
+                        <div class="flex items-center gap-2 text-[10px] font-mono text-slate-500 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span>
+                            <span class="ml-1.5">Querying TinyFish for live web intelligence…</span>
+                        </div>` : `
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[10px] font-mono text-slate-500 flex items-center gap-2">
+                            <i class="fa-solid fa-key text-amber-500"></i>
+                            <span>Add a TinyFish API key to enrich answers with live web results.</span>
+                        </div>`}
+                </div>`;
+
+            // Jump straight to the winning section — that is the whole point of a navigator.
+            const target = best.section.id;
+            setTimeout(() => {
+                const el = document.getElementById(target);
+                if (el) {
+                    const top = el.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+                    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+                }
+            }, 220);
+
+            if (!hasKey) return;
+
+            // Live layer — never allowed to break local navigation.
+            try {
+                const webResults = await tinyFishSearch(query);
+                renderWebResults(webResults, query);
+            } catch (err) {
+                const box = document.getElementById('ai-web-results');
+                if (box) {
+                    box.innerHTML = `
+                        <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-[10px] font-mono text-red-700 leading-relaxed">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                            Live search unavailable: ${escapeHtml(err.message || 'network error')}
+                            <span class="block mt-1 text-red-600/80 font-light">If this says "Failed to fetch", the browser blocked the request (CORS) — route it through a small proxy. Local navigation is unaffected.</span>
+                        </div>`;
+                }
+            }
+        }
+
+        function renderWebResults(items, query) {
+            const box = document.getElementById('ai-web-results');
+            if (!box) return;
+
+            if (!items || items.length === 0) {
+                box.innerHTML = `<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[10px] font-mono text-slate-500">TinyFish returned no live results for "${escapeHtml(query)}".</div>`;
+                return;
+            }
+
+            box.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-[9px] font-mono uppercase tracking-widest text-emerald-700">Live Web Intelligence</span>
+                    <span class="text-[8px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">TINYFISH</span>
+                </div>
+                <div class="space-y-2">
+                    ${items.map(r => `
+                        <a href="${escapeHtml(r.url || '#')}" target="_blank" rel="noopener noreferrer"
+                           class="block p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40 transition-colors">
+                            <div class="flex items-start justify-between gap-3">
+                                <span class="text-xs font-semibold text-slate-900 leading-snug">${escapeHtml(r.title || 'Untitled result')}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-slate-400 mt-1 shrink-0"></i>
+                            </div>
+                            <p class="text-[11px] text-slate-600 font-light mt-1 leading-relaxed">${escapeHtml((r.snippet || '').slice(0, 165))}</p>
+                            <span class="text-[9px] font-mono text-emerald-700 mt-1.5 inline-block">${escapeHtml(r.site_name || new URL(r.url || 'https://x.dev').hostname)}</span>
+                        </a>
+                    `).join('')}
+                </div>`;
+        }
+
+        function aiSectionChip(section) {
+            return `
+                <button onclick="scrollToSection('${section.id}')" class="ai-suggestion-chip text-left p-2.5 rounded-xl bg-white border border-slate-200 flex items-center gap-2">
+                    <i class="fa-solid ${section.icon} text-indigo-500 text-xs shrink-0"></i>
+                    <span class="text-[11px] font-mono text-slate-700 truncate">${section.label}</span>
+                </button>`;
+        }
+
+        function renderAiIdleState() {
+            const results = document.getElementById('ai-nav-results');
+            if (!results) return;
+            results.innerHTML = `
+                <div class="text-[9px] font-mono uppercase tracking-widest text-slate-500 mb-2.5">Jump To Any Section</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    ${SITE_SECTIONS.map(s => aiSectionChip(s)).join('')}
+                </div>
+                <p class="text-[10px] text-slate-500 font-light mt-3 leading-relaxed">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>
+                    Ask in plain English — the navigator reads your intent and scrolls you to the right section.
+                </p>`;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, c => (
+                { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+            ));
+        }
+
+        /* ================= AI PANEL OPEN / CLOSE ================= */
+        function openAiNavigator() {
+            const panel = document.getElementById('ai-nav-panel');
+            if (panel && panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                refreshAiKeyStatus();
+                const results = document.getElementById('ai-nav-results');
+                if (results && !results.innerHTML.trim()) renderAiIdleState();
+
+                // The drawer and the panel occupy the same space — never show both.
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    const icon = document.getElementById('menu-icon');
+                    if (icon) icon.className = 'fa-solid fa-bars text-xl';
+                }
+            }
+        }
+
+        function closeAiNavigator() {
+            const panel = document.getElementById('ai-nav-panel');
+            if (panel) panel.classList.add('hidden');
+        }
+
+        function toggleAiNavigator() {
+            const panel = document.getElementById('ai-nav-panel');
+            if (!panel) return;
+
+            if (panel.classList.contains('hidden')) {
+                openAiNavigator();
+                setTimeout(() => {
+                    const input = document.getElementById('ai-nav-input');
+                    if (input) input.focus();
+                }, 60);
+            } else {
+                closeAiNavigator();
+            }
+        }
+
+        function toggleAiKeyPanel() {
+            const keyPanel = document.getElementById('ai-key-panel');
+            const keyInput = document.getElementById('tinyfish-key-input');
+            if (!keyPanel) return;
+
+            keyPanel.classList.toggle('hidden');
+            if (!keyPanel.classList.contains('hidden') && keyInput) {
+                keyInput.value = safeStorageGet('tinyfish_api_key');
+                setTimeout(() => keyInput.focus(), 60);
+            }
+        }
+
+        function saveTinyFishKey() {
+            const keyInput = document.getElementById('tinyfish-key-input');
+            if (!keyInput) return;
+
+            const value = keyInput.value.trim();
+            const saved = value ? safeStorageSet('tinyfish_api_key', value) : (safeStorageRemove('tinyfish_api_key'), true);
+
+            if (value && !saved) {
+                alert('This browser blocked local storage, so the key could not be saved here.\n\nPaste it into AI_NAV_CONFIG.TINYFISH_API_KEY in the page source instead.');
+                return;
+            }
+
+            refreshAiKeyStatus();
+            const keyPanel = document.getElementById('ai-key-panel');
+            if (keyPanel) keyPanel.classList.add('hidden');
+        }
+
+        function clearTinyFishKey() {
+            safeStorageRemove('tinyfish_api_key');
+            const keyInput = document.getElementById('tinyfish-key-input');
+            if (keyInput) keyInput.value = '';
+            refreshAiKeyStatus();
+        }
+
+        function initAiNavigatorEvents() {
+            const input = document.getElementById('ai-nav-input');
+            if (input) {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        runAiNavigator();
+                    }
+                });
+            }
+
+            const keyInput = document.getElementById('tinyfish-key-input');
+            if (keyInput) {
+                keyInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveTinyFishKey();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeAiNavigator();
+
+                // "/" opens the navigator from anywhere outside a text field.
+                const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '');
+                if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+                    e.preventDefault();
+                    toggleAiNavigator();
+                }
+            });
+
+            // Click anywhere outside the panel (and off its trigger) to dismiss it.
+            document.addEventListener('click', (e) => {
+                const panel = document.getElementById('ai-nav-panel');
+                if (!panel || panel.classList.contains('hidden')) return;
+                if (panel.contains(e.target) || e.target.closest('[data-ai-toggle]')) return;
+                closeAiNavigator();
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Build the nav bar, section rail and mobile list from SITE_SECTIONS FIRST,
+            // so every listener below binds to elements that already exist.
+            buildNavigator();
+            refreshAiKeyStatus();
+            renderAiIdleState();
+            setActiveSection('hero');
+            initAiNavigatorEvents();
 
             // Mobile Menu Controller
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -2116,16 +2176,6 @@
         scrollySteps.forEach(step => scrollyObserver.observe(step));
 
         // ================= HEAVENLY STARDUST BACKGROUND CANVAS =================
-        // Palette is re-read from CSS custom properties whenever the theme flips.
-        const meshPalette = { node: '#6366F1', link: '#818CF8', boost: 1 };
-
-        function syncMeshPalette() {
-            const cs = getComputedStyle(document.documentElement);
-            meshPalette.node = (cs.getPropertyValue('--mesh-node') || '#6366F1').trim();
-            meshPalette.link = (cs.getPropertyValue('--mesh-link') || '#818CF8').trim();
-            meshPalette.boost = parseFloat(cs.getPropertyValue('--mesh-boost')) || 1;
-        }
-
         const bgCanvas = document.getElementById('bg-canvas');
         let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
 
@@ -2185,8 +2235,8 @@
 
                     bgCtx.beginPath();
                     bgCtx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-                    bgCtx.fillStyle = meshPalette.node;
-                    bgCtx.globalAlpha = Math.min(1, n.baseAlpha * meshPalette.boost);
+                    bgCtx.fillStyle = '#6366F1';
+                    bgCtx.globalAlpha = n.baseAlpha;
                     bgCtx.fill();
 
                     for (let j = i + 1; j < nodes.length; j++) {
@@ -2199,8 +2249,8 @@
                             bgCtx.beginPath();
                             bgCtx.moveTo(n.x, n.y);
                             bgCtx.lineTo(n2.x, n2.y);
-                            bgCtx.strokeStyle = meshPalette.link;
-                            bgCtx.globalAlpha = (1 - ldist / 130) * 0.18 * meshPalette.boost;
+                            bgCtx.strokeStyle = '#818CF8';
+                            bgCtx.globalAlpha = (1 - ldist / 130) * 0.18;
                             bgCtx.lineWidth = 0.8;
                             bgCtx.stroke();
                         }
@@ -2213,114 +2263,83 @@
             renderBgMesh();
         }
 
-        // ========= 3D LIQUID TILT + CURSOR-TRACKED SPECULAR POOL (rAF throttled) =========
-        const tiltSelector = '.glass-panel, .glass-card, .glass-card-hover, .liquid-glass, .scrolly-step';
-        const REST_TRANSFORM = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        // ================= OPTIMIZED 3D CARD TILT EFFECT =================
+        const tiltSelector = '.glass-panel, .glass-card-hover, .scrolly-step';
         let activeTiltCard = null;
-        let tiltPending = false;
-        let lastPointer = { x: 0, y: 0 };
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         document.addEventListener('mousemove', (e) => {
-            lastPointer.x = e.clientX;
-            lastPointer.y = e.clientY;
-            if (tiltPending) return;
-            tiltPending = true;
-            requestAnimationFrame(() => {
-                tiltPending = false;
-                applyTilt(document.elementFromPoint(lastPointer.x, lastPointer.y));
-            });
-        }, { passive: true });
+            const card = e.target.closest(tiltSelector);
+            if (card) {
+                if (activeTiltCard && activeTiltCard !== card) {
+                    activeTiltCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                }
+                activeTiltCard = card;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const rotateX = (-y / rect.height) * 6;
+                const rotateY = (x / rect.width) * 6;
 
-        function applyTilt(hit) {
-            let card = hit ? hit.closest(tiltSelector) : null;
-            if (card && card.closest('#cmd-palette')) card = null;
-
-            if (activeTiltCard && activeTiltCard !== card) {
-                activeTiltCard.style.transform = REST_TRANSFORM;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+            } else if (activeTiltCard) {
+                activeTiltCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
                 activeTiltCard = null;
             }
-            if (!card) return;
+        });
 
-            const rect = card.getBoundingClientRect();
-            const localX = lastPointer.x - rect.left;
-            const localY = lastPointer.y - rect.top;
-
-            // Specular pool follows the pointer across the glass surface.
-            card.style.setProperty('--mx', `${((localX / rect.width) * 100).toFixed(1)}%`);
-            card.style.setProperty('--my', `${((localY / rect.height) * 100).toFixed(1)}%`);
-
-            if (prefersReducedMotion) return;
-
-            activeTiltCard = card;
-            const rotateX = (-(localY - rect.height / 2) / rect.height) * 6;
-            const rotateY = ((localX - rect.width / 2) / rect.width) * 6;
-            card.style.transform =
-                `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
-        }
-
-        // ================= SCROLLSPY NAVIGATION OBSERVER =================
+        // ================= SCROLLSPY NAVIGATION (drives nav bar + rail + arrows) =================
         function initScrollspy() {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('#desktop-nav a[href^="#"]');
+            let ticking = false;
 
-            const observerOptions = {
-                root: null,
-                rootMargin: '-20% 0px -60% 0px',
-                threshold: 0
+            const computeActiveSection = () => {
+                // The probe sits just below the sticky header — whatever it is over is "current".
+                const probe = window.pageYOffset + HEADER_OFFSET + 40;
+                let activeId = SITE_SECTIONS[0].id;
+
+                // SITE_SECTIONS is in document order, so the last match wins.
+                SITE_SECTIONS.forEach(s => {
+                    const el = document.getElementById(s.id);
+                    if (!el) return;
+                    const top = el.getBoundingClientRect().top + window.pageYOffset;
+                    if (top <= probe) activeId = s.id;
+                });
+
+                // At the very bottom, always light up the final section.
+                const atBottom = (window.innerHeight + window.pageYOffset) >= (document.documentElement.scrollHeight - 60);
+                if (atBottom) activeId = SITE_SECTIONS[SITE_SECTIONS.length - 1].id;
+
+                setActiveSection(activeId);
             };
 
-            const scrollspyObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        navLinks.forEach(link => {
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('text-indigo-600', 'font-bold');
-                                link.classList.remove('text-slate-600');
-                            } else {
-                                link.classList.remove('text-indigo-600', 'font-bold');
-                                link.classList.add('text-slate-600');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        computeActiveSection();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
 
-            sections.forEach(section => scrollspyObserver.observe(section));
+            window.addEventListener('resize', computeActiveSection, { passive: true });
+
+            // Tailwind's CDN build applies its stylesheet asynchronously, so the first
+            // measurement can land before the real layout exists — recompute once
+            // fonts, styles and images have all settled.
+            computeActiveSection();
+            window.addEventListener('load', computeActiveSection);
+            setTimeout(computeActiveSection, 400);
         }
 
         // ================= COMMAND PALETTE (CMD/CTRL + K) =================
         const commandNavItems = [
-            { name: "AI Benefits Matrix", id: "persona-matrix", icon: "fa-users" },
-            { name: "Impact ROI Calculator", id: "calculator", icon: "fa-calculator" },
-            { name: "Adoption Roadmaps", id: "roadmaps", icon: "fa-route" },
-            { name: "Prompt Architecture Library", id: "prompt-library", icon: "fa-code" },
-            { name: "AI Readiness Diagnostic", id: "readiness", icon: "fa-gauge-high" },
+            // Every section, generated from the same registry the nav bar uses.
+            ...SITE_SECTIONS.map(s => ({ name: s.label, id: s.id, icon: s.icon })),
+            { name: "Ask the AI Navigator", action: () => { closeCmdPalette(); toggleAiNavigator(); }, icon: "fa-wand-magic-sparkles" },
             { name: "Student Persona View", action: () => { switchPersonaTab('student'); jumpToId('persona-matrix'); }, icon: "fa-graduation-cap" },
             { name: "Teacher Persona View", action: () => { switchPersonaTab('educator'); jumpToId('persona-matrix'); }, icon: "fa-chalkboard-user" },
-            { name: "Professional Persona View", action: () => { switchPersonaTab('professional'); jumpToId('persona-matrix'); }, icon: "fa-briefcase" },
-            { name: "Toggle Nocturne / Celestial Theme", action: () => { closeCmdPalette(); toggleTheme(null); }, icon: "fa-circle-half-stroke" },
-            { name: "Start a 25-Minute Focus Sprint", action: () => { closeCmdPalette(); openFocusAndStart('sprint'); }, icon: "fa-clock" },
-            { name: "Start a 50-Minute Deep Work Block", action: () => { closeCmdPalette(); openFocusAndStart('deep'); }, icon: "fa-hourglass-half" },
-            { name: "Show My Saved Prompts", action: () => { closeCmdPalette(); showSavedPrompts(); }, icon: "fa-star" },
-            { name: "Back to Top", action: () => { closeCmdPalette(); scrollToTop(); }, icon: "fa-arrow-up" }
+            { name: "Professional Persona View", action: () => { switchPersonaTab('professional'); jumpToId('persona-matrix'); }, icon: "fa-briefcase" }
         ];
-
-        function openFocusAndStart(mode) {
-            const dock = document.getElementById('focus-dock');
-            if (dock && !dock.classList.contains('is-open')) dock.classList.add('is-open');
-            setFocusMode(mode);
-            toggleFocusTimer();
-            showToast(`${focusModes[mode].label} started — stay with it`, 'fa-bolt', 'text-indigo-500');
-        }
-
-        function showSavedPrompts() {
-            const tab = Array.from(document.querySelectorAll('.prompt-tab'))
-                .find(t => t.textContent.toLowerCase().includes('saved'));
-            filterPrompts('favourites', tab);
-            jumpToId('prompt-library');
-        }
 
         function initCommandPalette() {
             const input = document.getElementById('cmd-palette-input');
@@ -2362,8 +2381,7 @@
 
         function jumpToId(id) {
             closeCmdPalette();
-            const target = document.getElementById(id);
-            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            scrollToSection(id);
         }
 
         function filterCommandResults(query) {
@@ -2690,13 +2708,8 @@
             `).join('');
         }
 
-        // ================= 5. PROMPT FILTERING + LIVE SEARCH + FAVOURITES =================
-        let activePromptCategory = 'all';
-        let promptQuery = '';
-
+        // ================= 5. ZERO-LAG GREEN PROMPT FILTERING (Pre-rendered DOM Toggle) =================
         function filterPrompts(cat, btnElement) {
-            activePromptCategory = cat;
-
             document.querySelectorAll('.prompt-tab').forEach(tab => {
                 tab.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm', 'border-emerald-500', 'bg-slate-900');
                 tab.classList.add('text-slate-600', 'hover:text-emerald-700');
@@ -2707,116 +2720,15 @@
                 btnElement.classList.remove('text-slate-600', 'hover:text-emerald-700');
             }
 
-            applyPromptFilters();
-        }
-
-        function applyPromptFilters() {
-            const favs = loadFavourites();
-            let shown = 0;
-
-            document.querySelectorAll('.prompt-card').forEach(card => {
+            const promptCards = document.querySelectorAll('.prompt-card');
+            promptCards.forEach(card => {
                 const cardCat = card.getAttribute('data-category');
-                const key = card.getAttribute('data-prompt-key');
-                const haystack = (card.textContent || '').toLowerCase();
-
-                const matchesCat =
-                    activePromptCategory === 'all' ||
-                    (activePromptCategory === 'favourites' ? favs.includes(key) : cardCat === activePromptCategory);
-                const matchesQuery = !promptQuery || haystack.includes(promptQuery);
-                const visible = matchesCat && matchesQuery;
-
-                if (visible) {
+                if (cat === 'all' || cardCat === cat) {
                     card.classList.remove('hidden');
-                    requestAnimationFrame(() => card.classList.remove('is-out'));
-                    shown++;
                 } else {
-                    card.classList.add('is-out');
                     card.classList.add('hidden');
                 }
             });
-
-            const counter = document.getElementById('prompt-search-count');
-            if (counter) counter.textContent = `${shown} shown`;
-
-            const empty = document.getElementById('prompt-empty');
-            if (empty) empty.classList.toggle('hidden', shown > 0);
-        }
-
-        function loadFavourites() {
-            try {
-                return JSON.parse(localStorage.getItem('aether-fav-prompts') || '[]');
-            } catch (err) {
-                return [];
-            }
-        }
-
-        function saveFavourites(list) {
-            try {
-                localStorage.setItem('aether-fav-prompts', JSON.stringify(list));
-            } catch (err) { /* storage unavailable — favourites stay session-only */ }
-        }
-
-        function toggleFavourite(btn) {
-            const card = btn.closest('.prompt-card');
-            if (!card) return;
-
-            const key = card.getAttribute('data-prompt-key');
-            const favs = loadFavourites();
-            const idx = favs.indexOf(key);
-
-            if (idx === -1) {
-                favs.push(key);
-                btn.classList.add('is-fav');
-                showToast('Prompt saved to your library', 'fa-star', 'text-amber-500');
-            } else {
-                favs.splice(idx, 1);
-                btn.classList.remove('is-fav');
-                showToast('Removed from saved prompts', 'fa-star-half-stroke', 'text-slate-400');
-            }
-
-            saveFavourites(favs);
-            refreshFavCount();
-            if (activePromptCategory === 'favourites') applyPromptFilters();
-        }
-
-        function refreshFavCount() {
-            const el = document.getElementById('fav-count');
-            if (el) el.textContent = `(${loadFavourites().length})`;
-        }
-
-        function initPromptLibrary() {
-            const favs = loadFavourites();
-
-            document.querySelectorAll('.prompt-card').forEach((card, i) => {
-                const title = card.querySelector('h4');
-                const key = (title ? title.textContent.trim() : `prompt-${i}`);
-                card.setAttribute('data-prompt-key', key);
-                card.style.setProperty('--i', i % 4);
-
-                // Inject the favourite toggle next to the existing copy button.
-                const actionRow = card.querySelector('.flex.items-center.gap-2');
-                if (actionRow && !actionRow.querySelector('.fav-btn')) {
-                    const btn = document.createElement('button');
-                    btn.className = 'fav-btn text-[11px] font-mono text-slate-500 hover:text-amber-500 bg-slate-100 px-2 py-1 rounded border border-slate-200 transition-colors' +
-                        (favs.includes(key) ? ' is-fav' : '');
-                    btn.title = 'Save this prompt';
-                    btn.setAttribute('aria-label', 'Save this prompt');
-                    btn.innerHTML = '<i class="fa-solid fa-star"></i>';
-                    btn.addEventListener('click', () => toggleFavourite(btn));
-                    actionRow.appendChild(btn);
-                }
-            });
-
-            const search = document.getElementById('prompt-search');
-            if (search) {
-                search.addEventListener('input', (e) => {
-                    promptQuery = e.target.value.toLowerCase().trim();
-                    applyPromptFilters();
-                });
-            }
-
-            refreshFavCount();
-            applyPromptFilters();
         }
 
         // ================= FIXED PROMPT COPY FUNCTION =================
@@ -2848,642 +2760,10 @@
 
         function showCopyFeedback(btn) {
             btn.innerHTML = `<i class="fa-solid fa-check text-emerald-600"></i> Copied!`;
-            showToast('Prompt copied to clipboard', 'fa-clipboard-check', 'text-emerald-500');
             setTimeout(() => {
                 btn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
             }, 2000);
         }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           6. GLASS TOAST
-           ═══════════════════════════════════════════════════════════════════ */
-        let toastTimer = null;
-
-        function showToast(message, icon = 'fa-circle-check', colorClass = 'text-emerald-500') {
-            const toast = document.getElementById('lg-toast');
-            const text = document.getElementById('lg-toast-text');
-            const ico = document.getElementById('lg-toast-icon');
-            if (!toast || !text || !ico) return;
-
-            text.textContent = message;
-            ico.className = `fa-solid ${icon} ${colorClass}`;
-            toast.classList.add('is-open');
-
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('is-open'), 2600);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           7. NOCTURNE / CELESTIAL THEME ENGINE
-           ═══════════════════════════════════════════════════════════════════ */
-        function applyTheme(theme, animateFrom) {
-            const isDark = theme === 'nocturne';
-            document.documentElement.classList.toggle('nocturne', isDark);
-
-            const icon = document.getElementById('theme-icon');
-            if (icon) icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-indigo-500 text-sm';
-
-            const btn = document.getElementById('theme-btn');
-            if (btn) btn.title = isDark ? 'Switch to Celestial (light) mode' : 'Switch to Nocturne (dark) mode';
-
-            // Ripple of light out from wherever the switch was pressed.
-            const wash = document.getElementById('theme-wash');
-            if (wash && animateFrom) {
-                wash.style.setProperty('--tx', `${animateFrom.x}px`);
-                wash.style.setProperty('--ty', `${animateFrom.y}px`);
-                wash.classList.remove('is-firing');
-                void wash.offsetWidth;
-                wash.classList.add('is-firing');
-            }
-
-            syncMeshPalette();
-
-            try { localStorage.setItem('aether-theme', theme); } catch (err) { /* non-fatal */ }
-        }
-
-        function toggleTheme(event) {
-            const next = document.documentElement.classList.contains('nocturne') ? 'celestial' : 'nocturne';
-            const origin = event ? { x: event.clientX, y: event.clientY } : { x: window.innerWidth - 80, y: 60 };
-            applyTheme(next, origin);
-            showToast(
-                next === 'nocturne' ? 'Nocturne mode engaged' : 'Celestial mode restored',
-                next === 'nocturne' ? 'fa-moon' : 'fa-sun',
-                next === 'nocturne' ? 'text-indigo-400' : 'text-amber-500'
-            );
-        }
-
-        function initTheme() {
-            let stored = null;
-            try { stored = localStorage.getItem('aether-theme'); } catch (err) { /* non-fatal */ }
-
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(stored || (prefersDark ? 'nocturne' : 'celestial'), null);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           8. LIQUID CURSOR, MAGNETIC BUTTONS & RIPPLES
-           ═══════════════════════════════════════════════════════════════════ */
-        function initLiquidCursor() {
-            const ring = document.getElementById('lg-cursor');
-            const dot = document.getElementById('lg-cursor-dot');
-            if (!ring || !dot || prefersReducedMotion) return;
-            if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-            let rx = window.innerWidth / 2, ry = window.innerHeight / 2;
-
-            const loop = () => {
-                // Ring trails the pointer with easing; the dot tracks it exactly.
-                rx += (lastPointer.x - rx) * 0.16;
-                ry += (lastPointer.y - ry) * 0.16;
-                ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-                dot.style.transform = `translate3d(${lastPointer.x}px, ${lastPointer.y}px, 0)`;
-                requestAnimationFrame(loop);
-            };
-            requestAnimationFrame(loop);
-
-            const hotSelector = 'a, button, input, select, textarea, .prompt-card, .quiz-opt, [onclick]';
-            document.addEventListener('mouseover', (e) => {
-                if (e.target.closest(hotSelector)) ring.classList.add('is-hot');
-            });
-            document.addEventListener('mouseout', (e) => {
-                if (e.target.closest(hotSelector)) ring.classList.remove('is-hot');
-            });
-        }
-
-        function initMagnetic() {
-            if (prefersReducedMotion) return;
-
-            document.querySelectorAll('.magnetic').forEach(el => {
-                el.addEventListener('mousemove', (e) => {
-                    const rect = el.getBoundingClientRect();
-                    const dx = (e.clientX - rect.left - rect.width / 2) * 0.28;
-                    const dy = (e.clientY - rect.top - rect.height / 2) * 0.35;
-                    el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(1.03)`;
-                });
-                el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-            });
-        }
-
-        function initRipples() {
-            document.addEventListener('pointerdown', (e) => {
-                const host = e.target.closest('.ripple-host');
-                if (!host) return;
-
-                const rect = host.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height) * 2;
-                const ripple = document.createElement('span');
-                ripple.className = 'lg-ripple';
-                ripple.style.width = ripple.style.height = `${size}px`;
-                ripple.style.left = `${e.clientX - rect.left}px`;
-                ripple.style.top = `${e.clientY - rect.top}px`;
-
-                host.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 760);
-            });
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           9. NUMBER COUNT-UP ON REVEAL
-           ═══════════════════════════════════════════════════════════════════ */
-        function initCountUps() {
-            const targets = document.querySelectorAll('[data-countup]');
-            if (!targets.length) return;
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-                    animateCount(entry.target);
-                    observer.unobserve(entry.target);
-                });
-            }, { threshold: 0.4 });
-
-            targets.forEach(el => observer.observe(el));
-        }
-
-        function animateCount(el) {
-            const end = parseFloat(el.getAttribute('data-countup')) || 0;
-            const decimals = parseInt(el.getAttribute('data-decimals'), 10) || 0;
-            const suffix = el.getAttribute('data-suffix') || '';
-            const prefix = el.getAttribute('data-prefix') || '';
-            const duration = 1500;
-
-            if (prefersReducedMotion) {
-                el.textContent = `${prefix}${end.toFixed(decimals)}${suffix}`;
-                return;
-            }
-
-            const start = performance.now();
-            const tick = (now) => {
-                const t = Math.min((now - start) / duration, 1);
-                const eased = 1 - Math.pow(1 - t, 4); // easeOutQuart
-                el.textContent = `${prefix}${(end * eased).toFixed(decimals)}${suffix}`;
-                if (t < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           10. HERO CAPABILITY TICKER
-           ═══════════════════════════════════════════════════════════════════ */
-        function initHeroTicker() {
-            const el = document.getElementById('hero-ticker');
-            if (!el) return;
-
-            const phrases = [
-                'deep comprehension',
-                'lesson design',
-                'code review velocity',
-                'exam confidence',
-                'research synthesis',
-                'career upskilling'
-            ];
-            let i = 0;
-
-            setInterval(() => {
-                i = (i + 1) % phrases.length;
-                el.style.transition = 'opacity .35s ease, transform .35s ease, filter .35s ease';
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(-8px)';
-                el.style.filter = 'blur(6px)';
-
-                setTimeout(() => {
-                    el.textContent = phrases[i];
-                    el.style.opacity = '1';
-                    el.style.transform = 'none';
-                    el.style.filter = 'blur(0)';
-                }, 360);
-            }, 3200);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           11. SCROLL ORB (progress ring + back to top)
-           ═══════════════════════════════════════════════════════════════════ */
-        function initScrollOrb() {
-            const orb = document.getElementById('to-top');
-            if (!orb) return;
-
-            let pending = false;
-            const update = () => {
-                const top = window.scrollY;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const pct = height > 0 ? (top / height) * 100 : 0;
-
-                orb.style.setProperty('--p', pct.toFixed(1));
-                orb.classList.toggle('is-visible', top > 600);
-                pending = false;
-            };
-
-            window.addEventListener('scroll', () => {
-                if (pending) return;
-                pending = true;
-                requestAnimationFrame(update);
-            }, { passive: true });
-
-            update();
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           12. DEEP FOCUS SESSION TIMER
-           ═══════════════════════════════════════════════════════════════════ */
-        const focusModes = {
-            sprint: { seconds: 25 * 60, label: 'Study Sprint', colour: '#6366F1' },
-            deep:   { seconds: 50 * 60, label: 'Deep Work',    colour: '#7C3AED' },
-            break:  { seconds: 5 * 60,  label: 'Recovery',     colour: '#059669' }
-        };
-
-        let focusMode = 'sprint';
-        let focusRemaining = focusModes.sprint.seconds;
-        let focusInterval = null;
-        let focusSessions = 0;
-
-        function toggleFocusDock() {
-            const dock = document.getElementById('focus-dock');
-            if (!dock) return;
-            const opening = !dock.classList.contains('is-open');
-            dock.classList.toggle('is-open', opening);
-            if (opening) showToast('Focus dock ready — pick a session length', 'fa-clock', 'text-indigo-500');
-        }
-
-        function setFocusMode(mode) {
-            if (!focusModes[mode]) return;
-
-            focusMode = mode;
-            stopFocusTimer();
-            focusRemaining = focusModes[mode].seconds;
-
-            document.querySelectorAll('.focus-mode-btn').forEach(btn => {
-                const isActive = btn.getAttribute('data-focus-mode') === mode;
-                btn.classList.toggle('bg-indigo-600', isActive);
-                btn.classList.toggle('text-white', isActive);
-                btn.classList.toggle('text-slate-600', !isActive);
-            });
-
-            const label = document.getElementById('focus-mode-label');
-            if (label) label.textContent = focusModes[mode].label;
-
-            const ring = document.getElementById('focus-ring');
-            if (ring) ring.style.setProperty('--focus-c', focusModes[mode].colour);
-
-            renderFocusTimer();
-        }
-
-        function renderFocusTimer() {
-            const total = focusModes[focusMode].seconds;
-            const mins = String(Math.floor(focusRemaining / 60)).padStart(2, '0');
-            const secs = String(focusRemaining % 60).padStart(2, '0');
-
-            const time = document.getElementById('focus-time');
-            if (time) time.textContent = `${mins}:${secs}`;
-
-            const ring = document.getElementById('focus-ring');
-            if (ring) ring.style.setProperty('--p', (((total - focusRemaining) / total) * 100).toFixed(1));
-        }
-
-        function toggleFocusTimer() {
-            if (focusInterval) {
-                stopFocusTimer();
-                showToast('Session paused', 'fa-pause', 'text-amber-500');
-                return;
-            }
-
-            focusInterval = setInterval(() => {
-                focusRemaining--;
-                renderFocusTimer();
-
-                if (focusRemaining <= 0) {
-                    stopFocusTimer();
-                    focusSessions++;
-                    const counter = document.getElementById('focus-count');
-                    if (counter) counter.textContent = focusSessions;
-                    showToast(`${focusModes[focusMode].label} complete — well done`, 'fa-trophy', 'text-amber-500');
-                    focusRemaining = focusModes[focusMode].seconds;
-                    renderFocusTimer();
-                }
-            }, 1000);
-
-            setFocusButton(true);
-            document.getElementById('focus-ring')?.classList.add('is-running');
-        }
-
-        function stopFocusTimer() {
-            clearInterval(focusInterval);
-            focusInterval = null;
-            setFocusButton(false);
-            document.getElementById('focus-ring')?.classList.remove('is-running');
-        }
-
-        function setFocusButton(running) {
-            const btn = document.getElementById('focus-toggle');
-            if (!btn) return;
-            btn.innerHTML = running
-                ? '<i class="fa-solid fa-pause mr-1.5"></i>Pause'
-                : '<i class="fa-solid fa-play mr-1.5"></i>Start';
-        }
-
-        function resetFocusTimer() {
-            stopFocusTimer();
-            focusRemaining = focusModes[focusMode].seconds;
-            renderFocusTimer();
-            showToast('Timer reset', 'fa-rotate-left', 'text-slate-400');
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           13. AI READINESS DIAGNOSTIC
-           ═══════════════════════════════════════════════════════════════════ */
-        const quizQuestions = [
-            {
-                q: 'How often do AI tools show up in your daily workflow?',
-                hint: 'Frequency is the strongest predictor of fluency.',
-                options: [
-                    { label: 'Rarely — I try them occasionally', points: 0 },
-                    { label: 'A few times a week for specific tasks', points: 10 },
-                    { label: 'Every day, woven into how I work', points: 18 }
-                ]
-            },
-            {
-                q: 'How do you usually write a prompt?',
-                hint: 'Structure separates a lucky answer from a repeatable one.',
-                options: [
-                    { label: 'One quick line, whatever comes to mind', points: 0 },
-                    { label: 'A sentence or two with some context', points: 9 },
-                    { label: 'Role, context, format and constraints, deliberately', points: 17 }
-                ]
-            },
-            {
-                q: 'What do you do with the answer the model gives you?',
-                hint: 'Verification is the difference between a tool and a crutch.',
-                options: [
-                    { label: 'Use it — it usually sounds right', points: 0 },
-                    { label: 'Spot-check the parts that matter most', points: 9 },
-                    { label: 'Cross-check claims against trusted sources every time', points: 16 }
-                ]
-            },
-            {
-                q: 'Have you automated a repeating task with AI?',
-                hint: 'Compounding time savings start here.',
-                options: [
-                    { label: 'Not yet — everything is still manual', points: 0 },
-                    { label: 'I have experimented once or twice', points: 9 },
-                    { label: 'Yes, I have workflows that run regularly', points: 17 }
-                ]
-            },
-            {
-                q: 'Can you explain where AI models fail?',
-                hint: 'Hallucination, training cut-offs, bias, missing context.',
-                options: [
-                    { label: 'Not really — I take output at face value', points: 0 },
-                    { label: 'Roughly, I know it makes things up sometimes', points: 8 },
-                    { label: 'Confidently, and I design my prompts around those limits', points: 16 }
-                ]
-            },
-            {
-                q: 'Do you keep the prompts that actually worked?',
-                hint: 'A prompt library is compounding intellectual capital.',
-                options: [
-                    { label: 'No — I rewrite from scratch each time', points: 0 },
-                    { label: 'A few are saved in my notes somewhere', points: 8 },
-                    { label: 'Yes, an organised, reusable library', points: 16 }
-                ]
-            }
-        ];
-
-        const quizTiers = [
-            {
-                min: 85, name: 'Pioneer', colour: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-                headline: 'You are operating at the frontier',
-                summary: 'You treat AI as infrastructure rather than a novelty — structured prompting, verified output, and automated workflows are already habits. Your leverage now comes from teaching others and building systems, not from personal speed.',
-                actions: [
-                    { icon: 'fa-users', title: 'Teach the workflow', text: 'Run a short session for your class or team — documented process beats individual talent.' },
-                    { icon: 'fa-diagram-project', title: 'Chain your agents', text: 'Move from single prompts to multi-step pipelines that hand work between models.' },
-                    { icon: 'fa-shield-halved', title: 'Codify the guardrails', text: 'Write down your verification rules so quality survives when you are not in the loop.' }
-                ]
-            },
-            {
-                min: 60, name: 'Architect', colour: 'text-indigo-700 bg-indigo-50 border-indigo-200',
-                headline: 'You build with AI, not just alongside it',
-                summary: 'Your prompting is deliberate and your instincts about model limits are sound. The gap between you and the top tier is systematisation — turning the things that work into repeatable assets instead of one-off wins.',
-                actions: [
-                    { icon: 'fa-book-bookmark', title: 'Build the library', text: 'Save every prompt that lands. Star them in the Prompt Architecture section below.' },
-                    { icon: 'fa-robot', title: 'Automate one loop', text: 'Pick your single most repetitive weekly task and make it run without you.' },
-                    { icon: 'fa-magnifying-glass-chart', title: 'Ground your research', text: 'Move source-heavy work into NotebookLM or Perplexity for citation-backed output.' }
-                ]
-            },
-            {
-                min: 35, name: 'Practitioner', colour: 'text-purple-700 bg-purple-50 border-purple-200',
-                headline: 'Solid foundation, big headroom',
-                summary: 'AI is genuinely helping you, but mostly in short bursts. The fastest gains available to you now come from prompt structure and from verifying output — both are learnable in an afternoon and both multiply everything else.',
-                actions: [
-                    { icon: 'fa-layer-group', title: 'Learn the four-part prompt', text: 'Role, context, format, constraints. Copy a template from the library below.' },
-                    { icon: 'fa-circle-check', title: 'Adopt a check habit', text: 'Ask the model for its sources, then verify two of them before you rely on the answer.' },
-                    { icon: 'fa-route', title: 'Follow Stage 02', text: 'Open the adoption roadmap and work through the middle stage for your role.' }
-                ]
-            },
-            {
-                min: 0, name: 'Explorer', colour: 'text-sky-700 bg-sky-50 border-sky-200',
-                headline: 'The best possible starting point',
-                summary: 'You are early, and that is genuinely an advantage — you have no bad habits to unlearn. Start with one tool and one recurring task rather than trying everything at once; depth beats breadth by a wide margin at this stage.',
-                actions: [
-                    { icon: 'fa-graduation-cap', title: 'Pick one tool', text: 'Choose a single engine from the free directory above and use only that for two weeks.' },
-                    { icon: 'fa-comments', title: 'Ask it to teach you', text: 'Use the Socratic Concept Tutor prompt — it explains rather than just answering.' },
-                    { icon: 'fa-clock', title: 'Run a focus sprint', text: 'Open the focus dock and give one 25-minute block to a single AI-assisted task.' }
-                ]
-            }
-        ];
-
-        let quizIndex = 0;
-        let quizScore = 0;
-
-        function buildQuiz() {
-            const stage = document.getElementById('quiz-stage');
-            const dots = document.getElementById('quiz-dots');
-            if (!stage || !dots) return;
-
-            stage.innerHTML = quizQuestions.map((item, qi) => `
-                <div class="quiz-slide ${qi === 0 ? 'is-active' : ''}" data-slide="${qi}">
-                    <h3 class="text-lg sm:text-2xl font-light text-slate-900 font-serif mb-2">${item.q}</h3>
-                    <p class="text-[11px] font-mono tracking-wider text-slate-500 mb-6">${item.hint}</p>
-                    <div class="space-y-3">
-                        ${item.options.map((opt, oi) => `
-                            <button type="button"
-                                    class="quiz-opt ripple-host w-full text-left p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm text-slate-700 font-light flex items-center gap-3"
-                                    data-q="${qi}" data-points="${opt.points}">
-                                <span class="w-6 h-6 shrink-0 rounded-full border border-slate-300 grid place-items-center text-[10px] font-mono text-slate-500">${'ABC'[oi]}</span>
-                                <span>${opt.label}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-
-            dots.innerHTML = quizQuestions.map((_, i) => `
-                <span class="quiz-dot h-1.5 rounded-full ${i === 0 ? 'w-7 bg-indigo-600' : 'w-1.5 bg-slate-300'}" data-dot="${i}"></span>
-            `).join('');
-
-            stage.querySelectorAll('.quiz-opt').forEach(btn => {
-                btn.addEventListener('click', () => pickQuizOption(btn));
-            });
-
-            updateQuizChrome();
-        }
-
-        function pickQuizOption(btn) {
-            btn.classList.add('is-picked');
-            quizScore += parseInt(btn.getAttribute('data-points'), 10) || 0;
-
-            setTimeout(() => {
-                quizIndex++;
-                if (quizIndex >= quizQuestions.length) {
-                    finishQuiz();
-                    return;
-                }
-
-                document.querySelectorAll('.quiz-slide').forEach(slide => {
-                    slide.classList.toggle('is-active', parseInt(slide.getAttribute('data-slide'), 10) === quizIndex);
-                });
-                updateQuizChrome();
-            }, 280);
-        }
-
-        function updateQuizChrome() {
-            const counter = document.getElementById('quiz-counter');
-            if (counter) {
-                counter.textContent = `Question ${String(quizIndex + 1).padStart(2, '0')} / ${String(quizQuestions.length).padStart(2, '0')}`;
-            }
-
-            document.querySelectorAll('.quiz-dot').forEach(dot => {
-                const i = parseInt(dot.getAttribute('data-dot'), 10);
-                const done = i < quizIndex;
-                const current = i === quizIndex;
-                dot.className = `quiz-dot h-1.5 rounded-full ${current ? 'w-7 bg-indigo-600' : done ? 'w-3 bg-emerald-500' : 'w-1.5 bg-slate-300'}`;
-            });
-        }
-
-        function finishQuiz() {
-            const stage = document.getElementById('quiz-stage');
-            const result = document.getElementById('quiz-result');
-            const progress = document.getElementById('quiz-progress-wrap');
-            if (!stage || !result) return;
-
-            stage.classList.add('hidden');
-            if (progress) progress.classList.add('hidden');
-            result.classList.remove('hidden');
-
-            const score = Math.min(100, quizScore);
-            const tier = quizTiers.find(t => score >= t.min) || quizTiers[quizTiers.length - 1];
-
-            // Sweep the gauge arc up to the score.
-            const arc = document.getElementById('gauge-arc');
-            if (arc) {
-                const circumference = 251.2;
-                requestAnimationFrame(() => {
-                    arc.style.strokeDashoffset = circumference * (1 - score / 100);
-                });
-            }
-
-            const scoreEl = document.getElementById('quiz-score');
-            if (scoreEl) {
-                scoreEl.setAttribute('data-countup', score);
-                animateCount(scoreEl);
-            }
-
-            const tierEl = document.getElementById('quiz-tier');
-            if (tierEl) {
-                tierEl.textContent = tier.name;
-                tierEl.className = `text-[10px] font-mono font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full border inline-block mb-3 ${tier.colour}`;
-            }
-
-            const headline = document.getElementById('quiz-headline');
-            if (headline) headline.textContent = tier.headline;
-
-            const summary = document.getElementById('quiz-summary');
-            if (summary) summary.textContent = tier.summary;
-
-            const actions = document.getElementById('quiz-actions');
-            if (actions) {
-                actions.innerHTML = tier.actions.map((a, i) => `
-                    <div class="scroll-reveal revealed p-4 rounded-xl bg-slate-50 border border-slate-200/80" style="--i: ${i}">
-                        <i class="fa-solid ${a.icon} text-indigo-600 mb-2"></i>
-                        <div class="text-xs font-bold text-slate-900 mb-1">${a.title}</div>
-                        <p class="text-[11px] text-slate-600 font-light leading-relaxed">${a.text}</p>
-                    </div>
-                `).join('');
-            }
-
-            showToast(`Readiness score: ${score} / 100 — ${tier.name}`, 'fa-gauge-high', 'text-indigo-500');
-        }
-
-        function restartQuiz() {
-            quizIndex = 0;
-            quizScore = 0;
-
-            const result = document.getElementById('quiz-result');
-            const stage = document.getElementById('quiz-stage');
-            const progress = document.getElementById('quiz-progress-wrap');
-
-            if (result) result.classList.add('hidden');
-            if (stage) stage.classList.remove('hidden');
-            if (progress) progress.classList.remove('hidden');
-
-            const arc = document.getElementById('gauge-arc');
-            if (arc) arc.style.strokeDashoffset = 251.2;
-
-            buildQuiz();
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           14. GLASS LAYER INJECTION + REVEAL STAGGER
-           ═══════════════════════════════════════════════════════════════════ */
-        function initGlassLayers() {
-            // Specular pool layer for every surface that opts in.
-            document.querySelectorAll('.lg-spot').forEach(el => {
-                if (!el.querySelector(':scope > .lg-glow')) {
-                    const glow = document.createElement('span');
-                    glow.className = 'lg-glow';
-                    glow.setAttribute('aria-hidden', 'true');
-                    el.prepend(glow);
-                }
-            });
-
-            // Rotating caustic border for accent surfaces.
-            document.querySelectorAll('.lg-ring').forEach(el => {
-                if (!el.querySelector(':scope > .lg-ring-line')) {
-                    const line = document.createElement('span');
-                    line.className = 'lg-ring-line';
-                    line.setAttribute('aria-hidden', 'true');
-                    el.prepend(line);
-                }
-            });
-        }
-
-        function initRevealStagger() {
-            // Siblings inside a grid cascade instead of all landing at once.
-            document.querySelectorAll('.grid').forEach(grid => {
-                const revealKids = Array.from(grid.children).filter(c => c.classList.contains('scroll-reveal'));
-                revealKids.forEach((kid, i) => kid.style.setProperty('--i', i % 4));
-            });
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           15. BOOT
-           ═══════════════════════════════════════════════════════════════════ */
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            initGlassLayers();
-            initRevealStagger();
-            initLiquidCursor();
-            initMagnetic();
-            initRipples();
-            initCountUps();
-            initHeroTicker();
-            initScrollOrb();
-            initPromptLibrary();
-            buildQuiz();
-            setFocusMode('sprint');
-        });
     </script>
 </body>
 </html>
