@@ -938,103 +938,136 @@
 
         html.dark .ai-dot {
             background: #A5B4FC;
-        
-        
         }
-        /* Microphone / Voice UI (compact & glassmorphic to match theme) */
-.voice-mic {
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: .6rem;
-  align-items: center;
-}
-.voice-mic .mic-btn {
-  --size: 46px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 999px;
-  display: inline-grid;
-  place-items: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,250,255,0.88));
-  border: 1px solid rgba(226,232,240,0.9);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-  cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  position: relative;
-  overflow: hidden;
-}
-.voice-mic .mic-btn:focus { outline: none; box-shadow: 0 8px 22px rgba(99,102,241,0.12); transform: translateY(-2px); }
-.voice-mic .mic-icon {
-  font-size: 18px;
-  color: #6b7280; /* slate-400 */
-  transition: color .15s ease, transform .15s ease;
-}
-.voice-mic .mic-status {
-  font-family: "Space Grotesk", monospace;
-  font-size: 11px;
-  color: #6b7280;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  user-select: none;
-}
 
-/* Active recording visual */
-.voice-mic .mic-btn.recording {
-  border-color: rgba(220,38,38,0.15);
-  box-shadow: 0 8px 28px rgba(220,38,38,0.12), 0 0 12px rgba(220,38,38,0.06);
-  transform: translateY(-3px) scale(1.02);
-}
-.voice-mic .mic-icon.recording {
-  color: #dc2626; /* red-600 */
-  transform: scale(1.08);
-}
-/* subtle pulsing ring while recording */
-.voice-mic .mic-btn.recording::after {
-  content: "";
-  position: absolute;
-  width: calc(var(--size) + 16px);
-  height: calc(var(--size) + 16px);
-  border-radius: 999px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(220,38,38,0.10), rgba(220,38,38,0.02) 40%, transparent 60%);
-  animation: micPulse 1.6s ease-out infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-@keyframes micPulse {
-  0% { transform: translate(-50%, -50%) scale(.9); opacity: 0.9; }
-  70% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.05; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-}
+        /* ============================================================================
+           AGENTIC LAYER — the AI cursor, the target highlight and the run HUD.
 
-/* Floating transcript bubble (temporary) */
-.voice-transcript {
-  min-width: 220px;
-  max-width: 420px;
-  padding: .55rem .75rem;
-  border-radius: .6rem;
-  background: rgba(255,255,255,0.94);
-  border: 1px solid rgba(226,232,240,0.9);
-  box-shadow: 0 12px 30px -12px rgba(2,6,23,0.08);
-  color: #0f172a;
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.18;
-  position: absolute;
-  right: 0;
-  transform-origin: top right;
-  z-index: 60;
-  margin-top: .5rem;
-  display: none;
-}
+           Everything below is new and namespaced `ai-agent-*`, so it cannot collide
+           with any existing rule on the page.
+           ============================================================================ */
 
-/* small visible hint when speech unsupported */
-.voice-mic .mic-unsupported {
-  font-size: 11px;
-  color: #c2410c; /* amber/red hint */
-}
+        /* The floating dot cursor. The wrapper is a zero-size point: the dot and the
+           "AI" caption are pinned around it, so moving the wrapper moves both. */
+        .ai-agent-cursor {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate3d(-200px, -200px, 0);
+            transition: transform 0.6s cubic-bezier(0.33, 1, 0.4, 1), opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+        .ai-agent-cursor.is-live { opacity: 1; }
+
+        .ai-agent-cursor-dot {
+            position: absolute;
+            left: -7px;
+            top: -7px;
+            width: 14px;
+            height: 14px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 32% 28%, #E0E7FF 0%, #6366F1 46%, #7C3AED 100%);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.20),
+                        0 0 14px 3px rgba(124, 58, 237, 0.50),
+                        0 2px 6px rgba(15, 23, 42, 0.30);
+            animation: aiAgentPulse 1.7s ease-in-out infinite;
+        }
+
+        @keyframes aiAgentPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.20), 0 0 14px 3px rgba(124, 58, 237, 0.48), 0 2px 6px rgba(15, 23, 42, 0.30); }
+            50%      { box-shadow: 0 0 0 7px rgba(99, 102, 241, 0.09), 0 0 22px 7px rgba(124, 58, 237, 0.72), 0 2px 6px rgba(15, 23, 42, 0.30); }
+        }
+
+        /* The word "AI" sitting just beneath the dot. */
+        .ai-agent-cursor-label {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 8px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.20em;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            padding: 2.5px 5px 2px;
+            border-radius: 5px;
+            white-space: nowrap;
+            box-shadow: 0 2px 7px rgba(30, 27, 75, 0.40);
+        }
+
+        /* Expanding ring drawn on each simulated click. */
+        .ai-agent-cursor-ring {
+            position: absolute;
+            left: -7px;
+            top: -7px;
+            width: 14px;
+            height: 14px;
+            border-radius: 9999px;
+            border: 2px solid rgba(99, 102, 241, 0.9);
+            opacity: 0;
+        }
+        .ai-agent-cursor.is-clicking .ai-agent-cursor-ring { animation: aiAgentRipple 0.55s ease-out; }
+        .ai-agent-cursor.is-clicking .ai-agent-cursor-dot  { animation: aiAgentPress 0.34s ease; }
+
+        @keyframes aiAgentRipple {
+            0%   { opacity: 0.85; transform: scale(1); }
+            100% { opacity: 0;    transform: scale(4.4); }
+        }
+        @keyframes aiAgentPress {
+            0%, 100% { transform: scale(1); }
+            45%      { transform: scale(0.55); }
+        }
+
+        /* Ring drawn around whatever control the agent is currently operating. */
+        .ai-agent-target {
+            outline: 2px solid rgba(124, 58, 237, 0.85) !important;
+            outline-offset: 3px;
+            box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.13) !important;
+            border-radius: 12px;
+            transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Plan card inside the navigator panel. */
+        .ai-agent-plan-in { animation: aiAgentPlanIn 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
+        @keyframes aiAgentPlanIn {
+            from { opacity: 0; transform: translateY(-7px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* Run HUD, bottom-left so it never sits under the scroll-jump cluster. */
+        .ai-agent-hud {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 9998;
+            width: 19rem;
+            max-width: calc(100vw - 40px);
+            opacity: 0;
+            transform: translateY(14px) scale(0.97);
+            transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .ai-agent-hud.is-live { opacity: 1; transform: none; }
+
+        html.dark .ai-agent-cursor-label { border-color: rgba(255, 255, 255, 0.22); }
+        html.dark .ai-agent-target {
+            outline-color: rgba(167, 139, 250, 0.9) !important;
+            box-shadow: 0 0 0 6px rgba(167, 139, 250, 0.15) !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ai-agent-cursor { transition-duration: 0.12s; }
+            .ai-agent-cursor-dot { animation: none; }
+            .ai-agent-plan-in, .ai-agent-hud { animation: none; transition: none; }
+        }
     </style>
 </head>
 <body class="bg-[#FAFAFC] text-slate-800 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col justify-between relative">
@@ -2224,7 +2257,7 @@
            ============================================================================ */
         const AI_NAV_CONFIG = {
 
-            GROQ_API_KEY: "",        // <-- ⬅️  YOUR GROQ API KEY GOES HERE
+            GROQ_API_KEY: "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",        // <-- ⬅️  YOUR GROQ API KEY GOES HERE
 
             TINYFISH_API_KEY: "",    // <-- ⬅️  YOUR TINYFISH API KEY GOES HERE
 
@@ -4114,6 +4147,1053 @@ STYLE
         }
 
         document.addEventListener('DOMContentLoaded', initHeroDots);
+
+        /* ============================================================================
+           AGENTIC LAYER — Groq stops describing the page and starts operating it.
+
+           How it fits together
+             1. You type a task ("set the ROI calculator to 30 hours for a teacher").
+             2. Groq turns that sentence into a short PLAN of tool calls — nothing
+                runs yet.
+             3. Every step is validated against AGENT_TOOLS below. Anything the model
+                invented that is not in that table is thrown away. This is what keeps
+                the agent locked to this website: those tools are the only things that
+                exist, and each one only touches a control on this page.
+             4. A "Run Task" button appears. The agent does not move until you press
+                it — no request can make the page act on its own.
+             5. On press, a dot-shaped cursor labelled "AI" flies to each control,
+                clicks it, and changes the value in front of you.
+
+           This block is entirely additive. It wraps runAiNavigator rather than editing
+           it, so the original navigator, the Groq answers and the TinyFish results all
+           behave exactly as they did before.
+           ============================================================================ */
+        (function initAgentLayer() {
+            'use strict';
+
+            /* ---------------------------------------------------------------------
+               1. WHAT THE AGENT IS ALLOWED TO DO
+
+               This table is the whole world the agent can reach. Each tool validates
+               its own arguments, so a malformed or out-of-range value coming back
+               from the model is dropped rather than applied.
+               --------------------------------------------------------------------- */
+
+            const ROLE_LABELS = {
+                student: 'Student',
+                educator: 'Teacher / Educator',
+                professional: 'Working Professional'
+            };
+
+            // Spellings the model (or you) might reasonably use for a persona.
+            const ROLE_ALIASES = {
+                student: 'student', students: 'student', pupil: 'student', learner: 'student',
+                teacher: 'educator', teachers: 'educator', educator: 'educator',
+                educators: 'educator', tutor: 'educator', lecturer: 'educator',
+                professional: 'professional', professionals: 'professional',
+                worker: 'professional', employee: 'professional', work: 'professional'
+            };
+
+            const PROMPT_CATEGORIES = ['all', 'academic', 'teaching', 'career'];
+
+            // Mirrors the savings factors inside calculateAIImpact(). Kept here so the
+            // planner can work out which slider value hits a target number of hours.
+            const ROI_FACTORS = { student: 0.55, educator: 0.65, professional: 0.50 };
+            const ROI_MIN_HOURS = 5;
+            const ROI_MAX_HOURS = 40;
+
+            const AGENT_TOOLS = {
+
+                set_roi: {
+                    signature: 'set_roi { role?: "student" | "educator" | "professional", hours?: whole number ' + ROI_MIN_HOURS + '-' + ROI_MAX_HOURS + ' }',
+                    purpose: 'Set the ROI calculator persona and/or the weekly task hours slider, then recalculate the results. Give at least one of the two arguments.',
+                    validate(a) {
+                        const args = {};
+                        if (a && a.role != null) {
+                            const role = ROLE_ALIASES[String(a.role).toLowerCase().trim()];
+                            if (role) args.role = role;
+                        }
+                        if (a && a.hours != null && a.hours !== '') {
+                            const n = Math.round(Number(a.hours));
+                            if (Number.isFinite(n)) args.hours = Math.min(ROI_MAX_HOURS, Math.max(ROI_MIN_HOURS, n));
+                        }
+                        return Object.keys(args).length ? args : null;
+                    },
+                    describe(args) {
+                        const bits = [];
+                        if (args.role) bits.push('persona to ' + ROLE_LABELS[args.role]);
+                        if (args.hours != null) bits.push('weekly hours to ' + args.hours);
+                        return 'Set the ROI calculator ' + bits.join(' and ');
+                    },
+                    async run(args) {
+                        await agentReveal(document.getElementById('calculator'));
+
+                        if (args.role) {
+                            const select = document.getElementById('calc-role');
+                            if (select) {
+                                await agentPointAt(select);
+                                await agentClick();
+                                select.value = args.role;
+                                select.dispatchEvent(new Event('change', { bubbles: true }));
+                                await agentPause(280);
+                                agentUnhighlight(select);
+                            }
+                        }
+
+                        if (args.hours != null) {
+                            const slider = document.getElementById('calc-hours');
+                            if (slider) {
+                                await agentPointAt(slider, sliderPoint(slider, Number(slider.value)));
+                                await agentClick();
+                                await agentDragSlider(slider, args.hours);
+                                await agentPause(220);
+                                agentUnhighlight(slider);
+                            }
+                        }
+
+                        // Press the real button so the page recalculates through its own path.
+                        const button = document.querySelector('#calculator button[onclick*="calculateAIImpact"]');
+                        if (button) {
+                            await agentPointAt(button);
+                            await agentClick();
+                            button.click();
+                            await agentPause(340);
+                            agentUnhighlight(button);
+                        } else if (typeof calculateAIImpact === 'function') {
+                            calculateAIImpact();
+                        }
+
+                        return readRoiSummary();
+                    }
+                },
+
+                go_to_section: {
+                    signature: 'go_to_section { section: one of ' + SITE_SECTIONS.map(s => '"' + s.id + '"').join(', ') + ' }',
+                    purpose: 'Scroll the page to a section of this website.',
+                    validate(a) {
+                        const id = a && a.section != null ? String(a.section).toLowerCase().trim() : '';
+                        return SITE_SECTIONS.some(s => s.id === id) ? { section: id } : null;
+                    },
+                    describe(args) {
+                        const section = SITE_SECTIONS.find(s => s.id === args.section);
+                        return 'Scroll to ' + (section ? section.label : args.section);
+                    },
+                    async run(args) {
+                        await agentReveal(document.getElementById(args.section));
+                        await agentPause(280);
+                        return '';
+                    }
+                },
+
+                show_roadmap: {
+                    signature: 'show_roadmap { role: "student" | "educator" | "professional" }',
+                    purpose: 'Open one of the three adoption roadmap paths.',
+                    validate(a) {
+                        const role = a && a.role != null ? ROLE_ALIASES[String(a.role).toLowerCase().trim()] : '';
+                        return role ? { role: role } : null;
+                    },
+                    describe(args) { return 'Open the ' + ROLE_LABELS[args.role] + ' roadmap'; },
+                    async run(args) {
+                        await agentReveal(document.getElementById('roadmaps'));
+                        const button = document.getElementById('rm-btn-' + args.role);
+                        if (button) {
+                            await agentPointAt(button);
+                            await agentClick();
+                            button.click();
+                            await agentPause(300);
+                            agentUnhighlight(button);
+                        }
+                        return '';
+                    }
+                },
+
+                filter_prompts: {
+                    signature: 'filter_prompts { category: ' + PROMPT_CATEGORIES.map(c => '"' + c + '"').join(' | ') + ' }',
+                    purpose: 'Filter the prompt library. "academic" is study prompts, "teaching" is lesson and rubric prompts, "career" is professional prompts.',
+                    validate(a) {
+                        const cat = a && a.category != null ? String(a.category).toLowerCase().trim() : '';
+                        return PROMPT_CATEGORIES.indexOf(cat) !== -1 ? { category: cat } : null;
+                    },
+                    describe(args) { return 'Filter the prompt library to "' + args.category + '"'; },
+                    async run(args) {
+                        await agentReveal(document.getElementById('prompt-library'));
+                        const button = document.querySelector('#prompt-library button[onclick*="filterPrompts(\'' + args.category + '\'"]');
+                        if (button) {
+                            await agentPointAt(button);
+                            await agentClick();
+                            button.click();
+                            await agentPause(300);
+                            agentUnhighlight(button);
+                        }
+                        return '';
+                    }
+                },
+
+
+                click_button: {
+                    signature: 'click_button { target: the "key" of a control from the CONTROLS list below }',
+                    purpose: 'Press any button, tab or control on this page. Use the exact key shown in the CONTROLS list.',
+                    validate(a) {
+                        const item = resolveClickable(a && a.target, 'button');
+                        return item ? { target: item.key } : null;
+                    },
+                    describe(args) {
+                        const item = findClickable(args.target);
+                        return 'Click "' + (item ? item.label : args.target) + '"' +
+                               (item && item.section ? ' in ' + item.section : '');
+                    },
+                    async run(args) {
+                        const item = findClickable(args.target);
+                        if (!item || !item.el.isConnected) throw new Error('That control is no longer on the page.');
+                        await agentPointAt(item.el);
+                        await agentClick();
+                        item.el.click();
+                        await agentPause(320);
+                        agentUnhighlight(item.el);
+                        return '';
+                    }
+                },
+
+                open_link: {
+                    signature: 'open_link { target: the "key" of a link from the CONTROLS list below }',
+                    purpose: 'Follow a link on this page. Links marked (external) open in a new browser tab; links marked (internal) scroll this page.',
+                    validate(a) {
+                        const item = resolveClickable(a && a.target, 'link');
+                        return item ? { target: item.key } : null;
+                    },
+                    describe(args) {
+                        const item = findClickable(args.target);
+                        if (!item) return 'Open link "' + args.target + '"';
+                        return item.external
+                            ? 'Open ' + item.label + ' — ' + item.host + ' (new tab)'
+                            : 'Follow the "' + item.label + '" link';
+                    },
+                    async run(args) {
+                        const item = findClickable(args.target);
+                        if (!item || !item.el.isConnected) throw new Error('That link is no longer on the page.');
+
+                        await agentPointAt(item.el);
+                        await agentClick();
+
+                        if (item.external) {
+                            // Opened in a new tab so this site is never navigated away from.
+                            window.open(item.el.href, '_blank', 'noopener,noreferrer');
+                            await agentPause(320);
+                            agentUnhighlight(item.el);
+                            return 'Opened ' + item.host + ' in a new tab';
+                        }
+
+                        item.el.click();
+                        await agentPause(320);
+                        agentUnhighlight(item.el);
+                        return '';
+                    }
+                },
+                set_theme: {
+                    signature: 'set_theme { mode: "light" | "dark" }',
+                    purpose: 'Switch this website between light and dark mode.',
+                    validate(a) {
+                        const mode = a && a.mode != null ? String(a.mode).toLowerCase().trim() : '';
+                        return (mode === 'light' || mode === 'dark') ? { mode: mode } : null;
+                    },
+                    describe(args) { return 'Switch the site to ' + args.mode + ' mode'; },
+                    async run(args) {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        if ((args.mode === 'dark') === isDark) return 'Already in ' + args.mode + ' mode.';
+
+                        const button = document.querySelector('header button.theme-toggle');
+                        if (button) {
+                            await agentPointAt(button);
+                            await agentClick();
+                            agentUnhighlight(button);
+                        }
+                        if (typeof toggleTheme === 'function') toggleTheme();
+                        await agentPause(300);
+                        return '';
+                    }
+                }
+            };
+
+            /* ---------------------------------------------------------------------
+               1b. THE LIVE CONTROL CATALOGUE
+
+               Every button and link on the page is scanned fresh each time a plan is
+               requested, so the agent always sees the real page rather than a list
+               that has to be kept in step by hand. Add a button anywhere on the site
+               and the agent can press it with no change here.
+               --------------------------------------------------------------------- */
+
+            // Controls the agent must never touch, even though they are on the page.
+            // The key panel would let it wipe your saved API keys, and its own plan
+            // card and HUD would let it press its own buttons.
+            const OFF_LIMITS_CONTAINERS = ['ai-key-panel', 'ai-agent-plan', 'ai-agent-hud', 'ai-nav-panel'];
+            const OFF_LIMITS_HANDLERS = /saveGroqKey|clearGroqKey|saveTinyFishKey|clearTinyFishKey|toggleAiKeyPanel|runAgentTask|dismissAgentTask|closeAgentHud/;
+
+            const MAX_CATALOGUE = 70;
+
+            let catalogue = [];
+
+            function slugify(text) {
+                return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+            }
+
+            function visibleLabel(el) {
+                const text = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
+                return text || el.getAttribute('aria-label') || el.getAttribute('title') || '';
+            }
+
+            // A page can carry six buttons all reading "Copy". A bare label would make
+            // them indistinguishable, so short labels borrow their card's heading and
+            // become "Copy — Socratic Tutor" and so on.
+            function contextualLabel(el, label) {
+                if (label.length > 18) return label;
+
+                const card = el.closest('article, li, .glass-card, .glass-panel, [class*="rounded-2xl"], [class*="rounded-xl"]');
+                const heading = card ? card.querySelector('h3, h4, h5') : null;
+                const title = heading ? (heading.innerText || heading.textContent || '').replace(/\s+/g, ' ').trim() : '';
+
+                return title ? label + ' — ' + title.slice(0, 40) : label;
+            }
+
+            function isVisible(el) {
+                if (!el.isConnected) return false;
+                const style = getComputedStyle(el);
+                if (style.display === 'none' || style.visibility === 'hidden') return false;
+                // offsetParent is null for display:none ancestors; fixed elements need the rect check.
+                return el.offsetWidth > 0 || el.offsetHeight > 0 || style.position === 'fixed';
+            }
+
+            // Rebuilt on every planning request so keys always point at live elements.
+            function collectClickables() {
+                const found = [];
+                const used = Object.create(null);
+
+                document.querySelectorAll('button, a[href], [role="button"]').forEach(el => {
+                    if (OFF_LIMITS_CONTAINERS.some(id => el.closest('#' + id))) return;
+                    if (OFF_LIMITS_HANDLERS.test(el.getAttribute('onclick') || '')) return;
+                    if (el.disabled || !isVisible(el)) return;
+
+                    const rawLabel = visibleLabel(el);
+                    if (!rawLabel) return;
+                    const label = contextualLabel(el, rawLabel);
+
+                    const isLink = el.tagName === 'A' && el.hasAttribute('href');
+                    const href = isLink ? el.href : '';
+                    const external = isLink && /^https?:/i.test(href) && el.hostname !== window.location.hostname;
+
+                    const section = el.closest('section[id], header, footer');
+                    const sectionName = section
+                        ? (section.id ? ((SITE_SECTIONS.find(s => s.id === section.id) || {}).label || section.id)
+                                      : section.tagName.toLowerCase())
+                        : '';
+
+                    // Stable, readable key. Duplicated labels get a numeric suffix.
+                    let key = el.id || slugify(label) || (isLink ? 'link' : 'button');
+                    if (used[key]) key = key + '-' + (++used[key]);
+                    else used[key] = 1;
+
+                    found.push({
+                        key: key,
+                        label: label.slice(0, 60),
+                        section: sectionName,
+                        kind: isLink ? 'link' : 'button',
+                        external: external,
+                        host: external ? el.hostname : '',
+                        el: el
+                    });
+                });
+
+                catalogue = found.slice(0, MAX_CATALOGUE);
+                return catalogue;
+            }
+
+            function findClickable(key) {
+                return catalogue.find(item => item.key === key) || null;
+            }
+
+            // Accepts the exact key, or falls back to matching on the visible label so
+            // a near-miss from the model still lands on the right control.
+            function resolveClickable(target, kind) {
+                if (target == null) return null;
+                const wanted = String(target).trim();
+                if (!wanted) return null;
+
+                const pool = catalogue.filter(item => item.kind === kind);
+                const exact = pool.find(item => item.key === wanted);
+                if (exact) return exact;
+
+                const lower = wanted.toLowerCase();
+                return pool.find(item => item.label.toLowerCase() === lower) ||
+                       pool.find(item => item.key.toLowerCase() === slugify(wanted)) ||
+                       pool.find(item => item.label.toLowerCase().indexOf(lower) !== -1) ||
+                       null;
+            }
+
+            // The catalogue as the planner sees it.
+            function describeCatalogue() {
+                const items = collectClickables();
+                const buttons = items.filter(i => i.kind === 'button');
+                const links = items.filter(i => i.kind === 'link');
+
+                const line = item => '- ' + item.key + ' — "' + item.label + '"' +
+                    (item.section ? ' [' + item.section + ']' : '') +
+                    (item.external ? ' (external: ' + item.host + ')' : (item.kind === 'link' ? ' (internal)' : ''));
+
+                return 'BUTTONS\n' + buttons.map(line).join('\n') +
+                       '\n\nLINKS\n' + links.map(line).join('\n');
+            }
+
+            /* ---------------------------------------------------------------------
+               2. THE DOT CURSOR
+               --------------------------------------------------------------------- */
+
+            let cursorEl = null;
+
+            function getCursor() {
+                if (cursorEl && cursorEl.isConnected) return cursorEl;
+                cursorEl = document.createElement('div');
+                cursorEl.id = 'ai-agent-cursor';
+                cursorEl.className = 'ai-agent-cursor';
+                cursorEl.setAttribute('aria-hidden', 'true');
+                cursorEl.innerHTML =
+                    '<span class="ai-agent-cursor-ring"></span>' +
+                    '<span class="ai-agent-cursor-dot"></span>' +
+                    '<span class="ai-agent-cursor-label">AI</span>';
+                document.body.appendChild(cursorEl);
+                return cursorEl;
+            }
+
+            function agentCursorTo(x, y, ms) {
+                const el = getCursor();
+                el.style.transitionDuration = (ms == null ? 600 : ms) + 'ms';
+                el.style.transform = 'translate3d(' + Math.round(x) + 'px, ' + Math.round(y) + 'px, 0)';
+            }
+
+            function agentCursorShow() { getCursor().classList.add('is-live'); }
+
+            function agentCursorHide(delay) {
+                const el = getCursor();
+                setTimeout(() => el.classList.remove('is-live'), delay || 0);
+            }
+
+            // Parks the dot beside an element without pretending to click it. This is
+            // what "pops out" the moment a task is recognised.
+            function agentCursorStandby(anchor) {
+                const el = getCursor();
+                const rect = anchor && anchor.getBoundingClientRect
+                    ? anchor.getBoundingClientRect()
+                    : { left: window.innerWidth / 2, top: window.innerHeight / 3, width: 0, height: 0 };
+
+                // Appear in place the first time rather than flying in from off-screen.
+                const first = !el.classList.contains('is-live');
+                agentCursorTo(rect.left + rect.width + 16, rect.top + rect.height / 2, first ? 0 : 480);
+
+                // Commit that position before fading in. A forced reflow is used rather
+                // than requestAnimationFrame, which browsers pause in background tabs.
+                void el.offsetWidth;
+                el.classList.add('is-live');
+            }
+
+            async function agentClick() {
+                const el = getCursor();
+                el.classList.remove('is-clicking');
+                void el.offsetWidth;                 // restart the animation
+                el.classList.add('is-clicking');
+                await agentPause(430);
+                el.classList.remove('is-clicking');
+            }
+
+            function agentPause(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            let highlighted = [];
+
+            function agentHighlight(el) {
+                if (!el) return;
+                el.classList.add('ai-agent-target');
+                if (highlighted.indexOf(el) === -1) highlighted.push(el);
+            }
+
+            function agentUnhighlight(el) {
+                if (!el) return;
+                el.classList.remove('ai-agent-target');
+                highlighted = highlighted.filter(h => h !== el);
+            }
+
+            function agentClearHighlights() {
+                highlighted.forEach(el => el.classList.remove('ai-agent-target'));
+                highlighted = [];
+            }
+
+            // Brings a section or control into a comfortable part of the viewport and
+            // waits for the smooth scroll to settle before anything reads its position.
+            async function agentReveal(el) {
+                if (!el) return;
+                const rect = el.getBoundingClientRect();
+                const safeTop = HEADER_OFFSET + 30;
+                const safeBottom = window.innerHeight - 90;
+                if (rect.top >= safeTop && rect.bottom <= safeBottom) return;
+
+                const centred = rect.top + window.pageYOffset -
+                    Math.max((window.innerHeight - rect.height) / 2, HEADER_OFFSET + 20);
+                window.scrollTo({ top: Math.max(centred, 0), behavior: 'smooth' });
+                await agentPause(740);
+            }
+
+            async function agentPointAt(el, point) {
+                if (!el) return;
+                await agentReveal(el);
+                const rect = el.getBoundingClientRect();
+                const target = point || { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                agentHighlight(el);
+                agentCursorTo(target.x, target.y, 620);
+                await agentPause(670);
+            }
+
+            // Where the slider thumb sits on screen for a given value.
+            function sliderPoint(slider, value) {
+                const rect = slider.getBoundingClientRect();
+                const min = Number(slider.min) || 0;
+                const max = Number(slider.max) || 100;
+                const pct = max === min ? 0 : (value - min) / (max - min);
+                const inset = 9;                     // half a thumb, so the ends line up
+                return {
+                    x: rect.left + inset + pct * Math.max(rect.width - inset * 2, 1),
+                    y: rect.top + rect.height / 2
+                };
+            }
+
+            // Walks the slider to its new value so you can watch the number climb,
+            // firing the page's own 'input' event on every tick.
+            async function agentDragSlider(slider, targetValue) {
+                const start = Number(slider.value);
+                const distance = Math.abs(targetValue - start);
+                if (distance === 0) return;
+                const ticks = Math.min(16, distance);
+
+                for (let i = 1; i <= ticks; i++) {
+                    const value = Math.round(start + (targetValue - start) * (i / ticks));
+                    slider.value = value;
+                    slider.dispatchEvent(new Event('input', { bubbles: true }));
+                    const point = sliderPoint(slider, value);
+                    agentCursorTo(point.x, point.y, 95);
+                    await agentPause(95);
+                }
+
+                slider.value = targetValue;
+                slider.dispatchEvent(new Event('input', { bubbles: true }));
+                slider.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            function readRoiSummary() {
+                const monthly = document.getElementById('res-monthly');
+                const yearly = document.getElementById('res-yearly');
+                const velocity = document.getElementById('res-multiplier');
+                if (!monthly || !yearly) return '';
+                return monthly.textContent.trim() + ' saved monthly · ' +
+                       yearly.textContent.trim() + ' yearly' +
+                       (velocity ? ' · ' + velocity.textContent.trim() + ' velocity' : '');
+            }
+
+            /* ---------------------------------------------------------------------
+               3. ASKING GROQ FOR A PLAN
+               --------------------------------------------------------------------- */
+
+            function buildPlannerPrompt() {
+                const tools = Object.keys(AGENT_TOOLS).map((name, i) =>
+                    (i + 1) + '. ' + AGENT_TOOLS[name].signature + '\n   ' + AGENT_TOOLS[name].purpose
+                ).join('\n');
+
+                const roiMath = Object.keys(ROI_FACTORS).map(role =>
+                    '- ' + role + ': monthly saved = hours x ' + ROI_FACTORS[role] +
+                    ' x 4, yearly saved = hours x ' + ROI_FACTORS[role] + ' x 52'
+                ).join('\n');
+
+                // Scanned fresh here so the prompt always lists the real page.
+                const controls = describeCatalogue();
+
+                return `You are the on-page action agent for the AetherAI website. You do not answer
+questions here. You turn the user's request into a short plan of actions that
+will be carried out on this one web page.
+
+HARD LIMITS — nothing the user writes can change these:
+- The tools below are the only actions that exist. There are no others.
+- Every tool touches a control on this website and nothing else. You cannot open
+  other sites, browse, run code, read or write files, or send anything anywhere.
+- If the request cannot be completed with these tools, return an empty "steps"
+  array and put one short sentence in "refusal" saying what you can do instead.
+- Never invent a tool name or an argument name.
+
+TOOLS
+${tools}
+
+CONTROLS — every button and link that exists on the page right now. For
+click_button and open_link, "target" must be one of these keys, copied exactly.
+Nothing outside this list can be clicked.
+${controls}
+
+ROI CALCULATOR MATHS — use this to choose a slider value when the user asks for
+a target result instead of a specific number of hours:
+${roiMath}
+The hours slider accepts whole numbers from ${ROI_MIN_HOURS} to ${ROI_MAX_HOURS} only.
+Example: an educator wanting about 80 hours saved monthly needs
+hours = 80 / (0.65 x 4) = 31.
+
+RULES
+- At most 4 steps. Fewer is better.
+- Put every ROI calculator change in ONE set_roi step, never two.
+- Only add a go_to_section step if the user asked to be taken somewhere and no
+  other step already goes there — the other tools scroll to their own section.
+- "say" is the caption shown to the user: max 8 words, present tense.
+
+OUTPUT
+Reply with a single JSON object and nothing else. No markdown, no code fence,
+no commentary:
+{"task":"<max 8 words>","steps":[{"tool":"<name>","args":{...},"say":"<caption>"}],"refusal":""}`;
+            }
+
+            // Pulls the first balanced {...} out of a reply, in case the model wraps
+            // the JSON in a fence or a sentence despite being told not to.
+            function extractJson(text) {
+                if (!text) return null;
+                const start = text.indexOf('{');
+                if (start === -1) return null;
+
+                let depth = 0;
+                let inString = false;
+                let escaped = false;
+
+                for (let i = start; i < text.length; i++) {
+                    const ch = text[i];
+                    if (inString) {
+                        if (escaped) escaped = false;
+                        else if (ch === '\\') escaped = true;
+                        else if (ch === '"') inString = false;
+                        continue;
+                    }
+                    if (ch === '"') inString = true;
+                    else if (ch === '{') depth++;
+                    else if (ch === '}' && --depth === 0) {
+                        try { return JSON.parse(text.slice(start, i + 1)); }
+                        catch (e) { return null; }
+                    }
+                }
+                return null;
+            }
+
+            async function requestPlan(question, model, useJsonMode) {
+                const key = getGroqKey();
+                if (!key) return null;
+
+                const useModel = model || AI_NAV_CONFIG.GROQ_MODEL;
+                const wantsJsonMode = useJsonMode !== false;
+
+                const body = {
+                    model: useModel,
+                    temperature: 0,
+                    max_tokens: 500,
+                    messages: [
+                        { role: 'system', content: buildPlannerPrompt() },
+                        { role: 'user', content: question }
+                    ]
+                };
+                if (wantsJsonMode) body.response_format = { type: 'json_object' };
+
+                const response = await fetch(AI_NAV_CONFIG.GROQ_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    let detail = '';
+                    try { detail = (await response.json())?.error?.message || ''; } catch (e) { /* body not JSON */ }
+
+                    // Not every model supports JSON mode — drop it and ask again as plain text.
+                    if (wantsJsonMode && (response.status === 400 || /response_format|json/i.test(detail))) {
+                        return requestPlan(question, useModel, false);
+                    }
+
+                    const modelProblem = response.status === 404 ||
+                        /decommission|deprecat|does not exist|not found/i.test(detail);
+                    if (modelProblem && useModel !== AI_NAV_CONFIG.GROQ_FALLBACK_MODEL) {
+                        return requestPlan(question, AI_NAV_CONFIG.GROQ_FALLBACK_MODEL, wantsJsonMode);
+                    }
+
+                    if (response.status === 401) throw new Error('Groq rejected the API key (401). Check it is correct and active.');
+                    if (response.status === 429) throw new Error('Groq rate limit reached (429). Wait a moment and try again.');
+                    throw new Error(detail || 'Groq returned HTTP ' + response.status + '.');
+                }
+
+                const data = await response.json();
+                const raw = data?.choices?.[0]?.message?.content?.trim() || '';
+                return validatePlan(extractJson(raw));
+            }
+
+            /* Every step the model proposed is checked against AGENT_TOOLS here.
+               Unknown tools and unusable arguments are discarded, so whatever comes
+               back over the network can only ever be a subset of what this page
+               already permits. */
+            function validatePlan(raw) {
+                const plan = { task: '', steps: [], refusal: '', dropped: 0 };
+                if (!raw || typeof raw !== 'object') return plan;
+
+                plan.task = String(raw.task || '').slice(0, 90);
+                plan.refusal = String(raw.refusal || '').slice(0, 240);
+
+                const proposed = Array.isArray(raw.steps) ? raw.steps.slice(0, 6) : [];
+                proposed.forEach(step => {
+                    if (!step || typeof step !== 'object') { plan.dropped++; return; }
+
+                    const name = String(step.tool || '').trim();
+                    const tool = Object.prototype.hasOwnProperty.call(AGENT_TOOLS, name) ? AGENT_TOOLS[name] : null;
+                    if (!tool) { plan.dropped++; return; }
+
+                    const args = tool.validate(step.args || {});
+                    if (!args) { plan.dropped++; return; }
+
+                    plan.steps.push({
+                        tool: name,
+                        args: args,
+                        say: String(step.say || '').slice(0, 80) || tool.describe(args)
+                    });
+                });
+
+                plan.steps = plan.steps.slice(0, 4);
+                return plan;
+            }
+
+            /* ---------------------------------------------------------------------
+               4. IS THIS A TASK OR A QUESTION?
+
+               Questions carry on to the existing Groq answer path untouched. Only
+               instructions get a plan and a Run button.
+               --------------------------------------------------------------------- */
+
+            const POLITE_PREFIX = /^(hey|hi|hello|ok|okay|please|kindly|now|just|can you|could you|would you|will you|i want you to|i'd like you to|i need you to|aetherai|ai|agent|assistant)[\s,:.-]*/i;
+            const ACTION_STARTER = /^(set|change|adjust|update|put|place|make|switch|select|choose|pick|calculate|recalculate|compute|fill|enter|type|move|slide|drag|open|show|display|go|take|scroll|navigate|jump|turn|enable|disable|apply|configure|reset|bump|raise|lower|increase|decrease|drop|run|click|press|tap|hit|push|follow|visit|launch)\b/i;
+            const STRONG_VERB = /\b(set|change|adjust|update|put in|place|fill in|switch to|slide|drag|recalculate|configure|set up|click on|click the|press the|open the link)\b/i;
+
+            function looksLikeAgentTask(query) {
+                let text = String(query).trim().toLowerCase();
+
+                for (let i = 0; i < 4; i++) {
+                    const stripped = text.replace(POLITE_PREFIX, '').trim();
+                    if (stripped === text) break;
+                    text = stripped;
+                }
+
+                if (!text) return false;
+                if (ACTION_STARTER.test(text)) return true;
+                if (STRONG_VERB.test(text)) return true;
+
+                // "roi calculator 30 hours educator" style fragments.
+                if (/\b(roi|calculator|slider|hours?|roadmap|theme|dark mode|light mode)\b/.test(text) && /\d/.test(text)) return true;
+
+                return false;
+            }
+
+            /* ---------------------------------------------------------------------
+               5. THE PLAN CARD AND ITS RUN BUTTON
+               --------------------------------------------------------------------- */
+
+            let pendingPlan = null;
+            let agentBusy = false;
+
+            // Sits at the top of the navigator results. Re-inserted each time because
+            // runAiNavigator rewrites that container's contents.
+            function planBox() {
+                const results = document.getElementById('ai-nav-results');
+                if (!results) return null;
+
+                let box = document.getElementById('ai-agent-plan');
+                if (!box) {
+                    box = document.createElement('div');
+                    box.id = 'ai-agent-plan';
+                    box.className = 'mb-3 ai-agent-plan-in';
+                }
+                if (box.parentNode !== results || results.firstChild !== box) {
+                    results.insertBefore(box, results.firstChild);
+                }
+                return box;
+            }
+
+            function clearPlanCard() {
+                pendingPlan = null;
+                const box = document.getElementById('ai-agent-plan');
+                if (box && box.parentNode) box.parentNode.removeChild(box);
+            }
+
+            function renderPlanThinking() {
+                const box = planBox();
+                if (!box) return;
+                box.innerHTML =
+                    '<div class="rounded-xl border border-purple-200 bg-purple-50/60 p-3.5 flex items-center gap-2 text-[10px] font-mono text-purple-700">' +
+                        '<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span>' +
+                        '<span class="ml-1.5">Agent is working out how to do that on this page…</span>' +
+                    '</div>';
+                agentCursorStandby(box);
+            }
+
+            function renderPlan(plan) {
+                const box = planBox();
+                if (!box) return;
+
+                if (!plan || (!plan.steps.length && !plan.refusal)) {
+                    clearPlanCard();
+                    agentCursorHide();
+                    return;
+                }
+
+                // Nothing survived validation — off-site request, or a target the page cannot reach.
+                if (!plan.steps.length) {
+                    pendingPlan = null;
+                    agentCursorHide(600);
+                    box.innerHTML =
+                        '<div class="rounded-xl border border-amber-200 bg-amber-50/70 p-3.5">' +
+                            '<div class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-700 mb-1.5">' +
+                                '<i class="fa-solid fa-hand mr-1"></i>Nothing to run' +
+                            '</div>' +
+                            '<p class="text-xs text-amber-900 font-light leading-relaxed">' +
+                                escapeHtml(plan.refusal || 'The agent can only operate the controls on this website.') +
+                            '</p>' +
+                        '</div>';
+                    return;
+                }
+
+                pendingPlan = plan;
+
+                const steps = plan.steps.map((step, i) =>
+                    '<li class="flex items-start gap-2.5">' +
+                        '<span class="w-4 h-4 mt-0.5 shrink-0 rounded-full bg-white border border-purple-300 text-[8px] font-mono font-bold text-purple-700 flex items-center justify-center">' + (i + 1) + '</span>' +
+                        '<span class="text-[11px] text-slate-700 font-light leading-relaxed">' + escapeHtml(AGENT_TOOLS[step.tool].describe(step.args)) + '</span>' +
+                    '</li>'
+                ).join('');
+
+                box.innerHTML =
+                    '<div class="rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50/90 to-indigo-50/60 p-4">' +
+                        '<div class="flex items-center justify-between mb-2.5">' +
+                            '<span class="text-[9px] font-mono font-bold uppercase tracking-widest text-purple-700">' +
+                                '<i class="fa-solid fa-robot mr-1"></i>Agent Task Ready' +
+                            '</span>' +
+                            '<span class="text-[8px] font-mono text-purple-700 bg-white/80 border border-purple-200 px-1.5 py-0.5 rounded">THIS SITE ONLY</span>' +
+                        '</div>' +
+                        (plan.task ? '<h5 class="text-sm font-bold text-slate-900 mb-2">' + escapeHtml(plan.task) + '</h5>' : '') +
+                        '<ul class="space-y-1.5 mb-3.5">' + steps + '</ul>' +
+                        '<div class="flex items-center gap-2">' +
+                            '<button onclick="runAgentTask()" class="flex-grow px-3 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 hover:opacity-95 text-white text-[10px] font-mono uppercase tracking-widest font-bold transition-all shadow-md shadow-purple-500/20 flex items-center justify-center gap-2">' +
+                                '<i class="fa-solid fa-play text-[9px]"></i><span>Run Task</span>' +
+                            '</button>' +
+                            '<button onclick="dismissAgentTask()" class="px-3 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-[10px] font-mono uppercase tracking-widest transition-colors">' +
+                                'Cancel' +
+                            '</button>' +
+                        '</div>' +
+                        '<p class="text-[9px] text-slate-500 font-light mt-2 leading-relaxed">' +
+                            '<i class="fa-solid fa-lock text-[8px] mr-1"></i>' +
+                            'Nothing runs until you press Run. The agent can only touch controls on this page.' +
+                        '</p>' +
+                    '</div>';
+
+                agentCursorStandby(box.querySelector('button') || box);
+            }
+
+            function renderPlanError(err) {
+                const box = planBox();
+                if (!box) return;
+                pendingPlan = null;
+                agentCursorHide(400);
+                box.innerHTML =
+                    '<div class="p-3 rounded-xl bg-red-50 border border-red-200 text-[10px] font-mono text-red-700 leading-relaxed">' +
+                        '<i class="fa-solid fa-triangle-exclamation mr-1"></i>' +
+                        'Agent planning unavailable: ' + escapeHtml((err && err.message) || 'network error') +
+                    '</div>';
+            }
+
+            /* ---------------------------------------------------------------------
+               6. THE RUN HUD — a small panel that narrates the run
+               --------------------------------------------------------------------- */
+
+            let hudEl = null;
+
+            function getHud() {
+                if (hudEl && hudEl.isConnected) return hudEl;
+                hudEl = document.createElement('div');
+                hudEl.id = 'ai-agent-hud';
+                hudEl.className = 'ai-agent-hud';
+                document.body.appendChild(hudEl);
+                return hudEl;
+            }
+
+            function hudOpen(plan) {
+                const hud = getHud();
+                const steps = plan.steps.map((step, i) =>
+                    '<li id="ai-agent-hud-step-' + i + '" class="flex items-start gap-2.5">' +
+                        '<i class="ai-agent-hud-icon fa-solid fa-circle text-[6px] text-slate-300 mt-1.5 w-3 text-center"></i>' +
+                        '<span class="text-[11px] text-slate-500 font-light leading-relaxed">' + escapeHtml(step.say) + '</span>' +
+                    '</li>'
+                ).join('');
+
+                hud.innerHTML =
+                    '<div class="rounded-2xl border border-purple-200 bg-white/95 backdrop-blur-xl shadow-xl shadow-purple-500/10 p-4">' +
+                        '<div class="flex items-center justify-between mb-2.5">' +
+                            '<span class="flex items-center gap-2 text-[9px] font-mono font-bold uppercase tracking-widest text-purple-700">' +
+                                '<span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>' +
+                                '<span id="ai-agent-hud-state">Agent Running</span>' +
+                            '</span>' +
+                            '<button onclick="closeAgentHud()" class="text-slate-400 hover:text-slate-700 w-6 h-6 rounded-lg hover:bg-slate-100 transition-colors" title="Hide">' +
+                                '<i class="fa-solid fa-xmark text-xs"></i>' +
+                            '</button>' +
+                        '</div>' +
+                        (plan.task ? '<h5 class="text-xs font-bold text-slate-900 mb-2.5">' + escapeHtml(plan.task) + '</h5>' : '') +
+                        '<ul class="space-y-2">' + steps + '</ul>' +
+                        '<div id="ai-agent-hud-result" class="hidden mt-3 pt-3 border-t border-slate-200 text-[11px] text-slate-700 font-light leading-relaxed"></div>' +
+                    '</div>';
+
+                // Forced reflow rather than requestAnimationFrame, for the same reason
+                // as the cursor: rAF does not fire while the tab is in the background.
+                void hud.offsetWidth;
+                hud.classList.add('is-live');
+            }
+
+            function hudStep(index, state) {
+                const row = document.getElementById('ai-agent-hud-step-' + index);
+                if (!row) return;
+
+                const icon = row.querySelector('.ai-agent-hud-icon');
+                const text = row.querySelector('span');
+
+                if (state === 'running') {
+                    if (icon) icon.className = 'ai-agent-hud-icon fa-solid fa-circle-notch fa-spin text-[10px] text-purple-600 mt-0.5 w-3 text-center';
+                    if (text) text.className = 'text-[11px] text-slate-900 font-medium leading-relaxed';
+                } else {
+                    if (icon) icon.className = 'ai-agent-hud-icon fa-solid fa-circle-check text-[10px] text-emerald-600 mt-0.5 w-3 text-center';
+                    if (text) text.className = 'text-[11px] text-slate-600 font-light leading-relaxed';
+                }
+            }
+
+            function hudFinish(summary) {
+                const state = document.getElementById('ai-agent-hud-state');
+                const result = document.getElementById('ai-agent-hud-result');
+                if (state) state.textContent = 'Task Complete';
+                if (result) {
+                    result.classList.remove('hidden');
+                    result.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>' +
+                        escapeHtml(summary || 'Done — everything you asked for is now set on the page.');
+                }
+                setTimeout(closeAgentHud, 7000);
+            }
+
+            function hudFail(err) {
+                const state = document.getElementById('ai-agent-hud-state');
+                const result = document.getElementById('ai-agent-hud-result');
+                if (state) state.textContent = 'Task Stopped';
+                if (result) {
+                    result.classList.remove('hidden');
+                    result.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-600 mr-1.5"></i>' +
+                        escapeHtml((err && err.message) || 'The agent could not finish that step.');
+                }
+            }
+
+            /* ---------------------------------------------------------------------
+               7. RUNNING THE PLAN — only ever reached by pressing Run
+               --------------------------------------------------------------------- */
+
+            async function runAgentTask() {
+                if (agentBusy || !pendingPlan || !pendingPlan.steps.length) return;
+                const plan = pendingPlan;
+
+                agentBusy = true;
+                clearPlanCard();
+                closeAiNavigator();          // move the panel out of the way so you can watch
+                hudOpen(plan);
+                agentCursorShow();
+
+                // Steps that produce a readable outcome contribute to the closing summary.
+                const notes = [];
+                try {
+                    for (let i = 0; i < plan.steps.length; i++) {
+                        const step = plan.steps[i];
+                        hudStep(i, 'running');
+                        const outcome = await AGENT_TOOLS[step.tool].run(step.args);
+                        if (outcome && notes.indexOf(outcome) === -1) notes.push(outcome);
+                        hudStep(i, 'done');
+                        await agentPause(300);
+                    }
+                    hudFinish(notes.join(' · '));
+                } catch (err) {
+                    hudFail(err);
+                } finally {
+                    agentClearHighlights();
+                    agentCursorHide(1200);
+                    agentBusy = false;
+                }
+            }
+
+            function dismissAgentTask() {
+                clearPlanCard();
+                agentCursorHide();
+            }
+
+            function closeAgentHud() {
+                const hud = document.getElementById('ai-agent-hud');
+                if (!hud) return;
+                hud.classList.remove('is-live');
+                setTimeout(() => { if (hud.parentNode) hud.parentNode.removeChild(hud); }, 320);
+            }
+
+            /* ---------------------------------------------------------------------
+               8. WIRING INTO THE EXISTING NAVIGATOR
+
+               runAiNavigator is wrapped, not edited. Its own rendering runs first and
+               untouched; the plan card is then slotted in above it.
+               --------------------------------------------------------------------- */
+
+            async function startPlanning(query) {
+                clearPlanCard();
+
+                if (!query || !getGroqKey() || !looksLikeAgentTask(query)) {
+                    agentCursorHide();
+                    return;
+                }
+
+                renderPlanThinking();
+                try {
+                    renderPlan(await requestPlan(query));
+                } catch (err) {
+                    renderPlanError(err);
+                }
+            }
+
+            const originalRunAiNavigator = window.runAiNavigator;
+
+            window.runAiNavigator = function patchedRunAiNavigator(presetQuery) {
+                const input = document.getElementById('ai-nav-input');
+                const query = String(presetQuery || (input ? input.value : '')).trim();
+
+                // The original writes its results synchronously before its first await,
+                // so by the time this returns the container is ready to be prepended to.
+                const running = originalRunAiNavigator.call(this, presetQuery);
+                startPlanning(query);
+                return running;
+            };
+
+            // Inline onclick handlers in the plan card and the HUD need these on window.
+            window.runAgentTask = runAgentTask;
+            window.dismissAgentTask = dismissAgentTask;
+            window.closeAgentHud = closeAgentHud;
+
+            // Escape abandons a pending task. A run already in progress is left alone,
+            // so the page never ends up half-configured.
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !agentBusy && pendingPlan) dismissAgentTask();
+            });
+
+            // The dot is positioned in viewport coordinates, so a resize invalidates it.
+            window.addEventListener('resize', () => {
+                if (!agentBusy) agentCursorHide();
+            }, { passive: true });
+        })();
     </script>
 </body>
 </html>
