@@ -1211,16 +1211,16 @@
                 <!-- ===== TINYFISH API KEY SLOT (paste your key here in the UI) ===== -->
                 <div id="ai-key-panel" class="hidden p-4 sm:p-5 bg-indigo-50/60 border-b border-indigo-200/70 space-y-4">
 
-                    <!--  KEY -->
+                    <!-- GROQ KEY -->
                     <div class="space-y-2">
                         <label class="block text-[10px] font-mono uppercase tracking-widest text-emerald-800 font-bold">
-                            <i class="fa-solid fa-bolt mr-1"></i>  API Key — writes the answers
+                            <i class="fa-solid fa-bolt mr-1"></i> Groq API Key — writes the answers
                         </label>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="password" id="-key-input" placeholder="gsk_… paste your  API key here"
+                            <input type="password" id="groq-key-input" placeholder="gsk_… paste your Groq API key here"
                                    class="flex-grow bg-white border border-emerald-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-emerald-500">
                             <div class="flex gap-2">
-                                <button onclick="saveKey()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                                <button onclick="saveGroqKey()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                                     Save
                                 </button>
                                 <button onclick="clearGroqKey()" class="px-3 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-[10px] font-mono uppercase tracking-widest transition-colors">
@@ -1228,6 +1228,7 @@
                                 </button>
                             </div>
                         </div>
+                        <div id="groq-key-status" class="hidden"></div>
                         <p class="text-[10px] text-slate-600 font-light leading-relaxed">
                             Free key from <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" class="text-emerald-700 underline">console.groq.com/keys</a>.
                             Groq is told all about this website, so it can answer questions about AetherAI itself.
@@ -1251,6 +1252,7 @@
                                 </button>
                             </div>
                         </div>
+                        <div id="tinyfish-key-status" class="hidden"></div>
                         <p class="text-[10px] text-slate-600 font-light leading-relaxed">
                             Free key from <a href="https://agent.tinyfish.ai" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">agent.tinyfish.ai</a>.
                         </p>
@@ -2196,7 +2198,7 @@
             <!-- MANDATED COMPETITION CREDITS -->
             <div class="py-10 text-center space-y-3">
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-widest font-mono uppercase">
-                    MADE BY - SHIVA(IX-A) AND PRABHJOT(IX-A) 
+                    MADE BY - SHIVA AND PRABHJOT CLASS IX-C AND IX-A RESPECTIVELY
                 </h3>
                 <h4 class="text-xs sm:text-sm font-extrabold text-sky-700 tracking-[0.2em] font-mono uppercase">
                     SCHOOL = DELHI INTERNATIONAL SCHOOL EDGE
@@ -2257,7 +2259,7 @@
            ============================================================================ */
         const AI_NAV_CONFIG = {
 
-            GROQ_API_KEY: "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",        // <-- ⬅️  YOUR GROQ API KEY GOES HERE
+            GROQ_API_KEY: "",        // <-- leave blank; use the on-page "API Key" panel instead
 
             TINYFISH_API_KEY: "",    // <-- ⬅️  YOUR TINYFISH API KEY GOES HERE
 
@@ -2269,6 +2271,13 @@
             GROQ_FALLBACK_MODEL: "qwen/qwen3.6-27b",
             GROQ_MAX_TOKENS: 700,
             GROQ_TEMPERATURE: 0.2,   // low = sticks closely to the site facts, less embellishing
+
+            // gpt-oss is a REASONING model: it spends tokens thinking before it writes.
+            // That thinking shares GROQ_MAX_TOKENS with the answer, so on a low budget the
+            // reply can come back completely empty. "low" keeps thinking short, and
+            // GROQ_RETRY_MAX_TOKENS is the wider budget used if an answer still arrives empty.
+            GROQ_REASONING_EFFORT: "low",
+            GROQ_RETRY_MAX_TOKENS: 1600,
 
             // TinyFish Search API — returns ranked live web results for a query.
             SEARCH_ENDPOINT: "https://api.search.tinyfish.ai",
@@ -2583,11 +2592,39 @@ STYLE
         }
 
         // Calls Groq's OpenAI-compatible chat endpoint with the site knowledge attached.
-        async function askGroq(question, model) {
+        /* Reasoning models (gpt-oss, qwen3) narrate their thinking before the real reply.
+           Some stream it back in a separate "reasoning" field, others inline it in a
+           <think> block. Neither is meant for the visitor, so both are stripped here. */
+        function stripReasoning(text) {
+            return String(text || '')
+                .replace(/<think>[\s\S]*?<\/think>/gi, '')   // closed think block
+                .replace(/^[\s\S]*?<\/think>/i, '')          // truncated opener
+                .replace(/<\/?think>/gi, '')
+                .trim();
+        }
+
+        async function askGroq(question, model, budget) {
             const key = getGroqKey();
             if (!key) return null;
 
             const useModel = model || AI_NAV_CONFIG.GROQ_MODEL;
+            const maxTokens = budget || AI_NAV_CONFIG.GROQ_MAX_TOKENS;
+
+            const payload = {
+                model: useModel,
+                temperature: AI_NAV_CONFIG.GROQ_TEMPERATURE,
+                max_tokens: maxTokens,
+                messages: [
+                    { role: 'system', content: buildSiteKnowledge() },
+                    { role: 'user', content: question }
+                ]
+            };
+
+            // Keep the model's private thinking short so the token budget goes to the
+            // answer itself. Ignored by models that do not support the parameter.
+            if (AI_NAV_CONFIG.GROQ_REASONING_EFFORT) {
+                payload.reasoning_effort = AI_NAV_CONFIG.GROQ_REASONING_EFFORT;
+            }
 
             const response = await fetch(AI_NAV_CONFIG.GROQ_ENDPOINT, {
                 method: 'POST',
@@ -2595,25 +2632,23 @@ STYLE
                     'Authorization': `Bearer ${key}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    model: useModel,
-                    temperature: AI_NAV_CONFIG.GROQ_TEMPERATURE,
-                    max_tokens: AI_NAV_CONFIG.GROQ_MAX_TOKENS,
-                    messages: [
-                        { role: 'system', content: buildSiteKnowledge() },
-                        { role: 'user', content: question }
-                    ]
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
                 let detail = '';
                 try { detail = (await response.json())?.error?.message || ''; } catch (e) { /* body not JSON */ }
 
+                // An unsupported reasoning_effort must not take the whole request down.
+                if (response.status === 400 && /reasoning_effort/i.test(detail)) {
+                    AI_NAV_CONFIG.GROQ_REASONING_EFFORT = '';
+                    return askGroq(question, useModel, maxTokens);
+                }
+
                 // A decommissioned model is the most likely failure — retry once on the fallback.
                 const modelProblem = response.status === 404 || /decommission|deprecat|does not exist|not found/i.test(detail);
                 if (modelProblem && useModel !== AI_NAV_CONFIG.GROQ_FALLBACK_MODEL) {
-                    return askGroq(question, AI_NAV_CONFIG.GROQ_FALLBACK_MODEL);
+                    return askGroq(question, AI_NAV_CONFIG.GROQ_FALLBACK_MODEL, maxTokens);
                 }
                 if (response.status === 401) throw new Error('Groq rejected the API key (401). Check it is correct and active.');
                 if (response.status === 429) throw new Error('Groq rate limit reached (429). Wait a moment and try again.');
@@ -2621,7 +2656,25 @@ STYLE
             }
 
             const data = await response.json();
-            const raw = data?.choices?.[0]?.message?.content?.trim() || '';
+            const choice = data?.choices?.[0] || {};
+            const raw = stripReasoning(choice.message?.content);
+
+            /* An empty reply is the one failure that used to pass silently: the model
+               spent the entire budget thinking and never began the answer, so the panel
+               rendered a blank box and looked broken. Buy it a wider budget once, then
+               say plainly what happened rather than showing nothing. */
+            if (!raw) {
+                const ranOut = choice.finish_reason === 'length';
+                if (ranOut && maxTokens < AI_NAV_CONFIG.GROQ_RETRY_MAX_TOKENS) {
+                    return askGroq(question, useModel, AI_NAV_CONFIG.GROQ_RETRY_MAX_TOKENS);
+                }
+                if (useModel !== AI_NAV_CONFIG.GROQ_FALLBACK_MODEL) {
+                    return askGroq(question, AI_NAV_CONFIG.GROQ_FALLBACK_MODEL, AI_NAV_CONFIG.GROQ_RETRY_MAX_TOKENS);
+                }
+                throw new Error(ranOut
+                    ? 'Groq used its whole token budget thinking and returned no answer. Try a shorter question.'
+                    : 'Groq returned an empty answer. Try asking again.');
+            }
 
             // Split the trailing "SECTION: <id>" hint off the visible answer.
             let sectionId = null;
@@ -2838,8 +2891,20 @@ STYLE
             const box = document.getElementById('ai-answer');
             if (!box) return;
 
-            if (!res || !res.answer) {
+            /* res is null only when there is no key at all, which the panel already
+               explains. An empty answer with a key present means the request came back
+               with nothing usable, and blanking the box made that look like a dead
+               button - so say it instead. */
+            if (!res) {
                 box.innerHTML = '';
+                return;
+            }
+
+            if (!res.answer) {
+                box.innerHTML = `
+                    <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[10px] font-mono text-amber-800 leading-relaxed">
+                        Groq replied but sent no answer text. Ask again, or try a shorter question.
+                    </div>`;
                 return;
             }
 
@@ -2970,51 +3035,169 @@ STYLE
                 const groqInput = document.getElementById('groq-key-input');
                 if (groqInput) groqInput.value = safeStorageGet('groq_api_key');
                 if (keyInput) keyInput.value = safeStorageGet('tinyfish_api_key');
+                setKeyStatus('groq-key-status', null);
+                setKeyStatus('tinyfish-key-status', null);
                 setTimeout(() => (groqInput || keyInput) && (groqInput || keyInput).focus(), 60);
             }
         }
 
-        function saveGroqKey() {
+        /* Saving used to be silent, so a mistyped or expired key looked exactly like a
+           working one until a question came back blank. Every save now reports what
+           happened in the panel itself. */
+        function setKeyStatus(id, state, message) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            if (!state) {
+                el.className = 'hidden';
+                el.textContent = '';
+                return;
+            }
+
+            // Full class strings (not interpolated) so Tailwind reliably generates them.
+            const tone = {
+                checking: 'text-slate-600 bg-white border-slate-200',
+                ok:       'text-emerald-800 bg-emerald-50 border-emerald-200',
+                warn:     'text-amber-800 bg-amber-50 border-amber-200',
+                error:    'text-red-700 bg-red-50 border-red-200'
+            }[state] || 'text-slate-600 bg-white border-slate-200';
+
+            el.className = 'text-[10px] font-mono leading-relaxed border rounded-lg px-2.5 py-2 ' + tone;
+            el.textContent = message;
+        }
+
+        /* People paste more than the key: surrounding quotes from a code sample, or the
+           whole "Bearer gsk_..." header. Those are obvious to a human and fatal to fetch,
+           so they are cleaned off rather than sent to Groq and rejected. */
+        function tidyPastedKey(raw) {
+            let key = String(raw || '').trim();
+
+            // Wrappers nest: "Bearer gsk_x" copied out of a quoted code sample leaves a
+            // quote in front of Bearer, and each strip exposes the next. Peel until
+            // nothing more comes off, so order of wrappers never matters.
+            for (let i = 0; i < 4; i++) {
+                const before = key;
+                key = key
+                    .replace(/^["\'`]+|["\'`,;]+$/g, '')
+                    .replace(/^Authorization\s*:\s*/i, '')
+                    .replace(/^Bearer\s+/i, '')
+                    .trim();
+                if (key === before) break;
+            }
+            return key;
+        }
+
+        // A one-token request: the cheapest way to learn whether a key is actually accepted.
+        async function verifyGroqKey(key) {
+            let response;
+            try {
+                response = await fetch(AI_NAV_CONFIG.GROQ_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: AI_NAV_CONFIG.GROQ_MODEL,
+                        max_tokens: 1,
+                        messages: [{ role: 'user', content: 'ping' }]
+                    })
+                });
+            } catch (e) {
+                return { ok: false, message: 'Could not reach Groq at all. If you opened this page by double-clicking the file, run it from a web address or a local server instead \u2014 browsers block API calls from file:// pages.' };
+            }
+
+            if (response.ok) return { ok: true, state: 'ok', message: 'Key saved and verified with Groq. Ask the navigator a question.' };
+
+            let detail = '';
+            try { detail = (await response.json())?.error?.message || ''; } catch (e) { /* body not JSON */ }
+
+            if (response.status === 401 || response.status === 403) {
+                return { ok: false, message: `Groq rejected this key (${response.status}${detail ? ' \u2014 ' + detail : ''}). Copy it again from console.groq.com/keys.` };
+            }
+            // The key itself got through; something else is temporarily in the way.
+            if (response.status === 429) {
+                return { ok: true, state: 'warn', message: 'Key accepted, but Groq is rate limiting right now (429). Answers may need a moment.' };
+            }
+            if (response.status === 404 || /model|decommission|deprecat/i.test(detail)) {
+                return { ok: true, state: 'warn', message: 'Key accepted. The default model was unavailable, so answers will use the fallback model.' };
+            }
+            return { ok: false, message: detail || `Groq returned HTTP ${response.status}.` };
+        }
+
+        async function saveGroqKey() {
             const input = document.getElementById('groq-key-input');
             if (!input) return;
 
-            const value = input.value.trim();
-            const saved = value ? safeStorageSet('groq_api_key', value) : (safeStorageRemove('groq_api_key'), true);
+            const value = tidyPastedKey(input.value);
+            input.value = value;
 
-            if (value && !saved) {
-                alert('This browser blocked local storage, so the key could not be saved here.\n\nPaste it into AI_NAV_CONFIG.GROQ_API_KEY in the page source instead.');
+            if (!value) {
+                safeStorageRemove('groq_api_key');
+                setKeyStatus('groq-key-status', null);
+                refreshAiKeyStatus();
+                return;
+            }
+
+            if (!safeStorageSet('groq_api_key', value)) {
+                setKeyStatus('groq-key-status', 'error', 'This browser blocked local storage, so the key could not be saved. Allow site data for this page (private/incognito mode usually blocks it) and try again.');
                 return;
             }
             refreshAiKeyStatus();
+
+            setKeyStatus('groq-key-status', 'checking', 'Saved. Checking the key with Groq\u2026');
+            const result = await verifyGroqKey(value);
+
+            // The key stays saved either way - a failed check may just be a dropped
+            // connection, and silently discarding what someone typed is worse.
+            setKeyStatus('groq-key-status', result.ok ? (result.state || 'ok') : 'error', result.message);
         }
 
         function clearGroqKey() {
             safeStorageRemove('groq_api_key');
             const input = document.getElementById('groq-key-input');
             if (input) input.value = '';
+            setKeyStatus('groq-key-status', null);
             refreshAiKeyStatus();
         }
 
-        function saveTinyFishKey() {
+        async function saveTinyFishKey() {
             const keyInput = document.getElementById('tinyfish-key-input');
             if (!keyInput) return;
 
-            const value = keyInput.value.trim();
-            const saved = value ? safeStorageSet('tinyfish_api_key', value) : (safeStorageRemove('tinyfish_api_key'), true);
+            const value = tidyPastedKey(keyInput.value);
+            keyInput.value = value;
 
-            if (value && !saved) {
-                alert('This browser blocked local storage, so the key could not be saved here.\n\nPaste it into AI_NAV_CONFIG.TINYFISH_API_KEY in the page source instead.');
+            if (!value) {
+                safeStorageRemove('tinyfish_api_key');
+                setKeyStatus('tinyfish-key-status', null);
+                refreshAiKeyStatus();
                 return;
             }
 
-            // Panel stays open — there are two keys, and you may want to set both.
+            if (!safeStorageSet('tinyfish_api_key', value)) {
+                setKeyStatus('tinyfish-key-status', 'error', 'This browser blocked local storage, so the key could not be saved. Allow site data for this page (private/incognito mode usually blocks it) and try again.');
+                return;
+            }
+
+            // Panel stays open - there are two keys, and you may want to set both.
             refreshAiKeyStatus();
+
+            setKeyStatus('tinyfish-key-status', 'checking', 'Saved. Checking the key with TinyFish\u2026');
+            try {
+                await tinyFishSearch('AetherAI key check');
+                setKeyStatus('tinyfish-key-status', 'ok', 'Key saved and verified with TinyFish. Live web results are on.');
+            } catch (err) {
+                const msg = (err && err.message) || 'network error';
+                const unreachable = /failed to fetch|networkerror|load failed/i.test(msg);
+                setKeyStatus('tinyfish-key-status', 'error', unreachable
+                    ? 'Could not reach TinyFish. If you opened this page by double-clicking the file, run it from a web address or a local server instead.'
+                    : msg);
+            }
         }
 
         function clearTinyFishKey() {
             safeStorageRemove('tinyfish_api_key');
             const keyInput = document.getElementById('tinyfish-key-input');
             if (keyInput) keyInput.value = '';
+            setKeyStatus('tinyfish-key-status', null);
             refreshAiKeyStatus();
         }
 
