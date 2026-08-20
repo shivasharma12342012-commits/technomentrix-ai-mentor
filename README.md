@@ -478,7 +478,7 @@ If you reference or build upon this project for academic or competitive research
 
 <div align="center">
 
-### 🏆 Designed & Developed for TECHNOMENTRIX 2026
+### 🏆 Designed & Developed for TECHNOMENTRIX 2026 COMPETITON
 **Category T03C • Theme: AI Mentor**  
 *Team Members: Shiva Sharma (IX-A) & Prabhjot Singh (IX-A)*  
 *Learn. Code. Create.*
