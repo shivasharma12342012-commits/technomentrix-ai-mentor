@@ -16,7 +16,6 @@
 ### 👥 Team Credits
 **Shiva Sharma** (Class IX-A) &nbsp;|&nbsp; **Prabhjot Singh** (Class IX-A)  
 *Official Submission for TECHNOMENTRIX 2026 • Category T03C (Classes IX–X)*
-**School** : *Delhi International School Edge*
 </div>
 
 ---
